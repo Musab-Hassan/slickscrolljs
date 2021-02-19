@@ -44,6 +44,23 @@ const _SS = {
                 translate = `translate(${position.x}px, ${position.y}px)`;
                 fixedElem.fixed.style.webkitTransform = translate;
                 fixedElem.fixed.style.transform = translate;
+
+                // Offset elements scrolling
+                if (dataObj.offsets) {
+                    const defaultSpeed = {speedX: 1, speedY: 1};
+                    
+                    dataObj.offsets.forEach((e) => {
+                        e = Object.assign({}, defaultSpeed, e);
+                        
+                        let offset = `translate(${position.x * (e.speedX - 1)}px, ${position.y * (e.speedY - 1)}px)`;
+                        element = document.querySelector(e.element);
+                        
+                        if (element) {
+                            element.style.webkitTransform = offset;
+                            element.style.transform = offset;
+                        }
+                    });
+                }
             });
         }
     },
@@ -67,7 +84,6 @@ function restructure(root) {
     
     for (const e of root.children) {
         width = (width < e.offsetWidth) ? e.offsetWidth : width;
-        height = (height < e.offsetHeight) ? e.offsetHeight : height;
         child.appendChild(e.cloneNode(true));
     }
 
@@ -77,7 +93,7 @@ function restructure(root) {
     root.appendChild(dummy);
 
     // Dummy Scroll element to allow overflow to appear
-    dummy.style.height = height + "px";
+    dummy.style.height = child.offsetHeight + "px";
     dummy.style.width = width + "px";
     dummy.style.top = "0px";
     dummy.style.left = "0px";
