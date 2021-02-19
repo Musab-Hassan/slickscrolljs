@@ -17,17 +17,17 @@ const defaults = {
     easing: "cubic-bezier(0.15, 1, 0.4, 1)",
 }
 
-// SlickScroll
+// It's the const, the myth, the legend, SlickScroll
 const _SS = {
     momentumScroll: function(dataObj) {
-        let px, py, startStamp;
+        let pl, startStamp;
         let rootElem = document.querySelector(dataObj.root);
         let fixedElem = restructure(rootElem);
 
         // Set unset properties to defaults
         dataObj = Object.assign({}, defaults, dataObj);
 
-        // Scroll Event for root element
+        // Scroll Event on root element
         rootElem.onscroll = function(e) {
             if (dataObj.onScroll) dataObj.onScroll(e);
 
@@ -39,8 +39,9 @@ const _SS = {
 
             startStamp = Date.now();
 
-            easeFrames(fixedElem.fixed, tl, pl, startStamp, dataObj, (position) => {
-                translate = `translateY(${position.y}px)`;
+            // Apply transform on children based on calculated value
+            easeFrames(tl, pl, startStamp, dataObj, (position) => {
+                translate = `translate(${position.x}px, ${position.y}px)`;
                 fixedElem.fixed.style.webkitTransform = translate;
                 fixedElem.fixed.style.transform = translate;
             });
@@ -48,9 +49,10 @@ const _SS = {
     },
 }
 
-// Restructure the root element to contain a fixed transformable child element
+// Adds fixed transformable child element to the root element
 function restructure(root) {
 
+    // Make sure root doesnt already have a position
     if (root.style.position != "absolute" || root.style.position != "fixed") {
         root.style.position = "relative";
     }
@@ -68,6 +70,7 @@ function restructure(root) {
     root.appendChild(child);
     root.appendChild(dummy);
 
+    // Dummy Scroll element to allow overflow to appear
     dummy.style.height = child.offsetHeight + "px";
     dummy.style.width = child.offsetWidth + "px";
     dummy.style.top = "0px";
@@ -75,6 +78,7 @@ function restructure(root) {
     dummy.style.position = "absolute";
     dummy.style.zIndex = "-9999";
 
+    // Content inside the root element
     child.style.zIndex = "1";
     child.style.height = "100%";
     child.style.width = "100%";
@@ -89,18 +93,20 @@ function restructure(root) {
 }
 
 
-
-function easeFrames(fixedElem, tl, pl, startStamp, dataObj, onIterate) {
-    // Convert easing string to floats
+// Provides calculated value for transforming based on scroll position
+function easeFrames(tl, pl, startStamp, dataObj, onIterate) {
+    // Parse easing string into floats
     let easing = parseBezier(dataObj.easing);
 
     let diffX = ((tl.x*-1) - pl.x);
     let diffY = ((tl.y*-1) - pl.y);
     let dx, dy;
 
+    // Transfrom frame loop
     (function loop() {
 
         let t = (Date.now() - startStamp) / dataObj.duration;
+
         if (t > 1) t = 1.01;
         if (t < 1) {
             dx = (diffX * bezier.apply(null, easing)(t)) + tl.x;
@@ -110,13 +116,13 @@ function easeFrames(fixedElem, tl, pl, startStamp, dataObj, onIterate) {
             dx = Math.ceil(dx * 100) / 100;
             dy = Math.ceil(dy * 100) / 100;
             onIterate({x: dx, y: dy});
-        }
 
-        window.requestAnimationFrame(loop);
+            window.requestAnimationFrame(loop);
+        }
     }());
 }
 
-
+// Bezier String Parser
 function parseBezier(bezierString) {
     bezierString = bezierString.split(/([^\(-\)]*)/);
     bezierString = bezierString[3].split(/,(?![^()]*\()/);
