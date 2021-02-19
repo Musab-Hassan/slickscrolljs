@@ -76,14 +76,11 @@ function restructure(root) {
 
     let child = document.createElement('div');
     let dummy = document.createElement('div');
-    let width = 0;
-    let height = 0;
 
     child.classList.add("_SS_wrapper");
     dummy.classList.add("_SS_dummy");
     
     for (const e of root.children) {
-        width = (width < e.offsetWidth) ? e.offsetWidth : width;
         child.appendChild(e.cloneNode(true));
     }
 
@@ -93,8 +90,8 @@ function restructure(root) {
     root.appendChild(dummy);
 
     // Dummy Scroll element to allow overflow to appear
-    dummy.style.height = child.offsetHeight + "px";
-    dummy.style.width = width + "px";
+    dummy.style.height = child.scrollHeight + "px";
+    dummy.style.width = child.scrollWidth + "px";
     dummy.style.top = "0px";
     dummy.style.left = "0px";
     dummy.style.position = "absolute";
