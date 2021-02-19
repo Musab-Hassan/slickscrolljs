@@ -59,20 +59,26 @@ function restructure(root) {
 
     let child = document.createElement('div');
     let dummy = document.createElement('div');
+    let width = 0;
+    let height = 0;
+
     child.classList.add("_SS_wrapper");
     dummy.classList.add("_SS_dummy");
     
     for (const e of root.children) {
-        child.appendChild(e.cloneNode(true))
+        width = (width < e.offsetWidth) ? e.offsetWidth : width;
+        height = (height < e.offsetHeight) ? e.offsetHeight : height;
+        child.appendChild(e.cloneNode(true));
     }
 
     root.innerHTML = "";
+    root.style.overflow = "auto";
     root.appendChild(child);
     root.appendChild(dummy);
 
     // Dummy Scroll element to allow overflow to appear
-    dummy.style.height = child.offsetHeight + "px";
-    dummy.style.width = child.offsetWidth + "px";
+    dummy.style.height = height + "px";
+    dummy.style.width = width + "px";
     dummy.style.top = "0px";
     dummy.style.left = "0px";
     dummy.style.position = "absolute";
