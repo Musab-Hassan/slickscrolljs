@@ -45,6 +45,8 @@ const _SS = {
                 fixedElem.fixed.style.webkitTransform = translate;
                 fixedElem.fixed.style.transform = translate;
 
+                
+
                 // Offset elements scrolling
                 if (dataObj.offsets) {
                     const defaultSpeed = {speedX: 1, speedY: 1};
@@ -64,6 +66,41 @@ const _SS = {
             });
         }
     },
+
+    inView: function(element, events, listener) {
+        var cacheIsInView;
+        let e = document.querySelector(element);
+
+        if (e) {
+            isInView = isInView(e);
+            if (listener) {
+                // TODO: Add listener event on scroll
+            } 
+            else if (isInView && events.inView) events.inView()
+            else if (!isInView && events.outView) events.outView()
+        }
+
+        function scrollableParent(e) {
+            if (e == null) return document.body;
+            let overflow = window.getComputedStyle(e).getPropertyValue('overflow');
+            if (e.scrollHeight > e.clientHeight && overflow != "visible" && overflow != "hidden") return e;
+            return scrollableParent(e.parentNode);
+        }
+
+        function isInView(e) {
+            let parent = scrollableParent(e);
+            let parentViewTop = parent.getBoundingClientRect().top;
+            let parentViewBottom = parentViewTop + parent.getBoundingClientRect().height;
+
+            var elemTop = e.getBoundingClientRect().top;
+            var elemBottom = elemTop + (e.getBoundingClientRect().height);
+
+            return (
+                ((elemBottom <= parentViewBottom) && (elemTop >= parentViewTop)) && 
+                ((elemBottom > 0) && (elemTop <= window.innerHeight))
+            );
+        }
+    }
 }
 
 // Adds fixed transformable child element to the root element
@@ -101,6 +138,7 @@ function restructure(root) {
     child.style.zIndex = "1";
     child.style.height = "100%";
     child.style.width = "100%";
+    child.style.overflow = "visible";
     child.style.top = "0px";
     child.style.left = "0px";
     child.style.position = "sticky";
