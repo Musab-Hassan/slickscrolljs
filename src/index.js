@@ -27,8 +27,28 @@ const _SS = {
         // Set unset properties to defaults
         dataObj = Object.assign({}, defaults, dataObj);
 
+        rootElem.addEventListener("scroll", onScroll);
+        
+        return {
+            // Unset onscroll and return dom to original state
+            destroy: () => {
+                rootElem.removeEventListener("scroll", onScroll);
+                // Revert element DOM structure to original state
+                let wrapper = document.querySelector(dataObj.root + " ._SS_wrapper");
+                
+                for (const e of wrapper.children) {
+                    e.style.removeProperty("transform");
+                    rootElem.appendChild(e.cloneNode(true));
+                }
+                wrapper.remove();
+                document.querySelector(dataObj.root + " ._SS_dummy").remove();
+                rootElem.style.removeProperty("overflow");
+                rootElem.style.removeProperty("position");
+            }
+        }
+
         // Scroll Event on root element
-        rootElem.onscroll = function(e) {
+        function onScroll(e) {
             if (dataObj.onScroll) dataObj.onScroll(e);
 
             pl = {y: rootElem.scrollTop, x: rootElem.scrollLeft }
@@ -44,8 +64,6 @@ const _SS = {
                 translate = `translate(${position.x}px, ${position.y}px)`;
                 fixedElem.fixed.style.webkitTransform = translate;
                 fixedElem.fixed.style.transform = translate;
-
-                
 
                 // Offset elements scrolling
                 if (dataObj.offsets) {
@@ -80,6 +98,7 @@ const _SS = {
             else if (!isInView && events.outView) events.outView()
         }
 
+        // Go through parent list to find first scrollable parent
         function scrollableParent(e) {
             if (e == null) return document.body;
             let overflow = window.getComputedStyle(e).getPropertyValue('overflow');
@@ -87,6 +106,7 @@ const _SS = {
             return scrollableParent(e.parentNode);
         }
 
+        // Returns boolean on if element is in view or not
         function isInView(e) {
             let parent = scrollableParent(e);
             let parentViewTop = parent.getBoundingClientRect().top;
