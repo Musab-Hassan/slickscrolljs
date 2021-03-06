@@ -127,10 +127,10 @@ const _SS = {
 function restructure(root) {
 
     // Make sure root doesnt already have a position
-    if (root.style.position != "absolute" || root.style.position != "fixed") {
+    if (getComputedStyle(root).position != "absolute" || getComputedStyle(root).position != "fixed") {
         root.style.position = "relative";
     }
-
+    
     let child = document.createElement('div');
     let dummy = document.createElement('div');
 
