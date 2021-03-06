@@ -28,11 +28,13 @@ const _SS = {
         dataObj = Object.assign({}, defaults, dataObj);
 
         rootElem.addEventListener("scroll", onScroll);
+        window.addEventListener("resize", onResize);
         
         return {
             // Unset onscroll and return dom to original state
             destroy: () => {
                 rootElem.removeEventListener("scroll", onScroll);
+                window.removeEventListener("resize", onResize);
                 // Revert element DOM structure to original state
                 let wrapper = document.querySelector(dataObj.root + " ._SS_wrapper");
                 
@@ -82,6 +84,11 @@ const _SS = {
                     });
                 }
             });
+        }
+
+        // Resize dummy on window resize to prevent over-scrolling
+        function onResize() {
+            fixedElem.dummy.style.height = fixedElem.fixed.scrollHeight + "px";
         }
     },
 
