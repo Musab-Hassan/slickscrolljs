@@ -1,3 +1,120 @@
+@import url("https://use.typekit.net/gey1gtp.css")
+
+$primaryColor: #77FF65
+$secondaryColor: #84f397
+$inkColor: #1C1C1C
+$invColor: white
+$font: "Proxima-nova", sans-serif
+    
 *
     margin: 0
     padding: 0
+
+body
+    background-color: $inkColor
+    overflow-x: hidden !important
+
+.nav-container
+    display: flex
+    justify-content: stretch
+    position: fixed
+    top: 0
+    left: 0
+    width: 100%
+    padding: 0 4vw
+    margin-top: 6vh
+    box-sizing: border-box
+    background-color: transparent
+
+    .align
+        flex-grow: 1
+
+        &.left
+            .logo
+                height: 3em
+
+        &.right
+            text-align: right
+            color: white
+            display: flex
+            flex-direction: column
+            justify-content: center
+            
+            ul
+                list-style-type: none
+
+                li 
+                    display: inline-block
+                    margin-left: 2em
+
+#landing.section
+    width: 100vw
+    height: 100vh
+    display: flex
+    flex-direction: column
+    justify-content: center
+
+    .back-image
+        position: absolute
+        left: 50%
+        transform: translateX(-50%);
+        -webkit-transform: translateX(-50%);
+        z-index: -1
+
+        img
+            height: 70vh
+            border-radius: 40px
+            box-shadow: 5px 5px 10px rgba(0,0,0,0.4)
+            transform: rotate(20deg)
+            -webkit-transform: rotate(20deg)
+
+    .align-wrapper
+        width: 100%
+        text-align: center
+
+        .content
+            width: 60%
+            margin: 0 auto
+            text-align: center
+
+            *
+                margin-bottom: 5vh
+
+
+.button
+    display: inline-block
+    font-size: 1em
+    letter-spacing: 0.07em
+    font-family: $font
+    text-transform: uppercase
+    font-weight: 800
+    padding: 0.8em 2em
+    box-sizing: border-box
+    color: $inkColor
+    cursor: pointer
+    border-radius: 60px
+    background-color: $primaryColor
+    transition: transform 0.3s cubic-bezier(0.68, -0.6, 0.32, 1.6)
+
+    &:hover
+        transform: scale(1.08)
+
+.sublink
+    font-size: 1em
+    letter-spacing: 0.07em
+    font-family: $font
+    text-transform: uppercase
+    font-weight: 800
+    cursor: pointer
+    color: $invColor
+
+.title
+    font-size: 4em
+    letter-spacing: 0.03em
+    color: $invColor
+    font-family: $font
+    text-transform: uppercase
+    font-weight: 800
+
+    span
+        color: $secondaryColor
