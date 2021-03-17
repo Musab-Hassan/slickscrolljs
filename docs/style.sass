@@ -25,6 +25,7 @@ body
     margin-top: 6vh
     box-sizing: border-box
     background-color: transparent
+    z-index: 20
 
     .align
         flex-grow: 1
@@ -48,7 +49,7 @@ body
                     margin-left: 2em
 
 #landing.section
-    width: 100vw
+    width: 95vw
     height: 100vh
     display: flex
     flex-direction: column
@@ -65,8 +66,8 @@ body
             height: 70vh
             border-radius: 40px
             box-shadow: 5px 5px 10px rgba(0,0,0,0.4)
-            transform: rotate(20deg)
-            -webkit-transform: rotate(20deg)
+            transform: rotate(15deg)
+            -webkit-transform: rotate(15deg)
 
     .align-wrapper
         width: 100%
@@ -80,6 +81,65 @@ body
             *
                 margin-bottom: 5vh
 
+#content.section
+    position: relative
+    width: 100vw
+    padding: 0 10vw
+    margin-top: 15vh
+    box-sizing: border-box
+    
+    .back-image-slide
+        position: absolute
+        text-align: center
+        left: -20vw
+        right: -20vw
+        top: -10vh
+        z-index: -1
+
+        .stack
+            display: inline-block
+
+            &.offset
+                position: relative
+                top: 20vh
+
+            &:not(:last-child)
+                margin-right: 5vh
+
+        img
+            display: block
+            height: 40vh
+            width: 35vw
+            object-fit: cover
+            opacity: 0.3
+            border-radius: 30px
+            margin-bottom: 5vh
+
+    .aligner
+        width: 100%
+        display: flex
+        flex-direction: column
+        justify-content: center
+
+        .right,.left
+            display: block
+            margin-bottom: 15vh
+
+            .button
+                margin-top: 5vh
+
+            .heart
+                position: relative
+                top: 50%
+                left: 0.2em
+                fill: #FF5722
+                transform: translateY(30%)
+                width: 1.7em
+
+        .right
+            align-self: flex-end
+            text-align: right
+
 
 .button
     display: inline-block
@@ -90,6 +150,7 @@ body
     font-weight: 800
     padding: 0.8em 2em
     box-sizing: border-box
+    text-decoration: none
     color: $inkColor
     cursor: pointer
     border-radius: 60px
@@ -99,14 +160,38 @@ body
     &:hover
         transform: scale(1.08)
 
-.sublink
+.sublink, .subtext
+    position: relative
     font-size: 1em
     letter-spacing: 0.07em
     font-family: $font
     text-transform: uppercase
+    text-decoration: none
     font-weight: 800
-    cursor: pointer
     color: $invColor
+
+.sublink
+    cursor: pointer
+
+    &::before
+        content: ""
+        position: absolute
+        width: 100%
+        height: 2px
+        bottom: 0
+        left: 0
+        background-color: $invColor
+        transform: scaleX(0)
+        transition: all 0.4s cubic-bezier(0.68, -0.6, 0.32, 1.6)
+        -webkit-transform: scaleX(0)
+        -webkit-transition: all 0.4s cubic-bezier(0.68, -0.6, 0.32, 1.6)
+
+    &:hover::before
+        transform: scaleX(1)
+
+
+    span
+        color: $secondaryColor
 
 .title
     font-size: 4em
@@ -118,3 +203,22 @@ body
 
     span
         color: $secondaryColor
+
+h2,h3
+    font-size: 3.8em
+    letter-spacing: 0.03em
+    color: $invColor
+    font-family: $font
+    text-transform: uppercase
+    font-weight: 800
+
+    span
+        color: $primaryColor
+
+h3
+    font-weight: 200
+    font-size: 3.5em
+
+    span 
+        font-weight: 800
+    
