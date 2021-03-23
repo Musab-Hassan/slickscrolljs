@@ -17,6 +17,9 @@ const defaults = {
     easing: "cubic-bezier(0.15, 1, 0.4, 1)",
 }
 
+var offsets = {};
+var fixed = {};
+
 // It's the const, the myth, the legend, SlickScroll
 const slickScroll = {
     momentumScroll: function(dataObj) {
@@ -27,27 +30,17 @@ const slickScroll = {
         let rootElem = document.querySelector(dataObj.root);
         let fixedElem = restructure(rootElem);
         
+        if (dataObj.fixed) fixed[dataObj.root] = dataObj.fixed;
+        if (dataObj.offsets) offsets[dataObj.root] = dataObj.offsets;
+
         rootElem.addEventListener("scroll", onScroll);
         window.addEventListener("resize", onResize);
         
         return {
-            // Unset onscroll and return dom to original state
-            destroy: () => {
-                rootElem.removeEventListener("scroll", onScroll);
-                window.removeEventListener("resize", onResize);
-                // Revert element DOM structure to original state
-                let wrapper = document.querySelector(dataObj.root + " ._SS_wrapper");
-                
-                for (const e of wrapper.children) {
-                    e.style.removeProperty("transform");
-                    rootElem.appendChild(e.cloneNode(true));
-                }
-                wrapper.remove();
-                document.querySelector(dataObj.root + " ._SS_dummy").remove();
-                rootElem.style.removeProperty("overflow");
-                rootElem.style.removeProperty("position");
-            }
+            destroy: (fullDestroy) => {onDestroy(fullDestroy);}
         }
+
+
 
         // Scroll Event on root element
         function onScroll(e) {
@@ -69,10 +62,10 @@ const slickScroll = {
                 fixedElem.fixed.style.transform = translate;
 
                 // Offset elements scrolling
-                if (dataObj.offsets) {
+                if (offsets[dataObj.root]) {
                     const defaultSpeed = {speedX: 1, speedY: 1};
                     
-                    dataObj.offsets.forEach((e) => {
+                    offsets[dataObj.root].forEach((e) => {
                         e = Object.assign({}, defaultSpeed, e);
                         
                         let offset = `translate(${position.x * (e.speedX - 1)}px, ${position.y * (e.speedY - 1)}px)`;
@@ -86,8 +79,8 @@ const slickScroll = {
                 }
 
                 // Fixed elements
-                if (dataObj.fixed) {
-                    dataObj.fixed.forEach((e) => {
+                if (fixed[dataObj.root]) {
+                    fixed[dataObj.root].forEach((e) => {
 
                         let offset = `translate(${position.x * -1}px, ${position.y * -1}px)`;
                         elements = document.querySelectorAll(e);
@@ -101,11 +94,53 @@ const slickScroll = {
             });
         }
 
+
+
+        // Unset onscroll and return dom to original state
+        function onDestroy(fullDestroy) {
+            if (typeof fullDestroy == "undefined") fullDestroy = false;
+            
+            let wrapper = document.querySelector(dataObj.root + " ._SS_wrapper");
+            rootElem.removeEventListener("scroll", onScroll);
+            window.removeEventListener("resize", onResize);
+            // Revert element DOM structure to original state if fullDestroy
+            if (fullDestroy) {
+                for (const e of wrapper.children) {
+                    e.style.removeProperty("transform");
+                    rootElem.appendChild(e.cloneNode(true));
+                }
+                wrapper.remove();
+            } else {
+                wrapper.removeAttribute("style");
+            }
+            document.querySelector(dataObj.root + " ._SS_dummy").remove();
+            rootElem.style.removeProperty("overflow");
+            rootElem.style.removeProperty("position");
+
+            clearTransform(fixed[dataObj.root]);
+            clearTransform(offsets[dataObj.root]);
+
+            function clearTransform(array) {
+                if (array) {
+                    array.forEach((e) => {
+                        elements = document.querySelectorAll(e.element);
+                        if (!e.element) elements = document.querySelectorAll(e);
+                        for (e of elements) {
+                            e.style.removeProperty("transform");
+                            e.style.removeProperty("-webkit-transform");
+                        }
+                    });
+                }
+            }
+        }
+
+
         // Resize dummy on window resize to prevent over-scrolling
         function onResize() {
             fixedElem.dummy.style.height = fixedElem.fixed.scrollHeight + "px";
         }
     },
+
 
     inView: function(element, events, listener) {
         var cacheIsInView;
