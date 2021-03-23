@@ -18,7 +18,7 @@ const defaults = {
 }
 
 // It's the const, the myth, the legend, SlickScroll
-const _SS = {
+const slickScroll = {
     momentumScroll: function(dataObj) {
         let pl, startStamp;
         let rootElem = document.querySelector(dataObj.root);
@@ -26,7 +26,7 @@ const _SS = {
 
         // Set unset properties to defaults
         dataObj = Object.assign({}, defaults, dataObj);
-
+        
         rootElem.addEventListener("scroll", onScroll);
         window.addEventListener("resize", onResize);
         
@@ -53,7 +53,8 @@ const _SS = {
         function onScroll(e) {
             if (dataObj.onScroll) dataObj.onScroll(e);
 
-            pl = {y: rootElem.scrollTop, x: rootElem.scrollLeft }
+            pl = { y: rootElem.scrollTop, x: rootElem.scrollLeft };
+            if (typeof pl.x === "undefined") pl = { y: rootElem.scrollY, x: rootElem.scrollX };
             
             let style = window.getComputedStyle(fixedElem.fixed);
             let matrix = new WebKitCSSMatrix(style.transform);
@@ -75,11 +76,11 @@ const _SS = {
                         e = Object.assign({}, defaultSpeed, e);
                         
                         let offset = `translate(${position.x * (e.speedX - 1)}px, ${position.y * (e.speedY - 1)}px)`;
-                        element = document.querySelector(e.element);
+                        elements = document.querySelectorAll(e.element);
                         
-                        if (element) {
-                            element.style.webkitTransform = offset;
-                            element.style.transform = offset;
+                        for (e of elements) {
+                            e.style.webkitTransform = offset;
+                            e.style.transform = offset;
                         }
                     });
                 }
