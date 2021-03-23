@@ -4,9 +4,14 @@
   padding: 0;
 }
 
+html {
+  overflow: hidden !important;
+}
+
 body {
   background-color: #1C1C1C;
   overflow-x: hidden !important;
+  height: 100vh;
 }
 
 .nav-container {
@@ -58,9 +63,11 @@ body {
 
 #landing.section .back-image {
   position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  -webkit-transform: translateX(-50%);
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
   z-index: -1;
 }
 
@@ -110,7 +117,8 @@ body {
 
 #content.section .back-image-slide .stack.offset {
   position: relative;
-  top: 20vh;
+  top: 10vh;
+  opacity: 0.4;
 }
 
 #content.section .back-image-slide .stack:not(:last-child) {
@@ -124,7 +132,7 @@ body {
   object-fit: cover;
   opacity: 0.3;
   border-radius: 30px;
-  margin-bottom: 5vh;
+  margin-bottom: 8vh;
 }
 
 #content.section .aligner {

@@ -10,9 +10,13 @@ $font: "Proxima-nova", sans-serif
     margin: 0
     padding: 0
 
+html
+    overflow: hidden !important
+
 body
     background-color: $inkColor
     overflow-x: hidden !important
+    height: 100vh
 
 .nav-container
     display: flex
@@ -57,9 +61,11 @@ body
 
     .back-image
         position: absolute
-        left: 50%
-        transform: translateX(-50%);
-        -webkit-transform: translateX(-50%);
+        left: 0
+        right: 0
+        margin-left: auto
+        margin-right: auto
+        text-align: center
         z-index: -1
 
         img
@@ -101,7 +107,8 @@ body
 
             &.offset
                 position: relative
-                top: 20vh
+                top: 10vh
+                opacity: 0.4
 
             &:not(:last-child)
                 margin-right: 5vh
@@ -113,7 +120,7 @@ body
             object-fit: cover
             opacity: 0.3
             border-radius: 30px
-            margin-bottom: 5vh
+            margin-bottom: 8vh
 
     .aligner
         width: 100%
