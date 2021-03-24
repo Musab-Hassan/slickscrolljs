@@ -30,14 +30,15 @@ const slickScroll = {
         let rootElem = document.querySelector(dataObj.root);
         let fixedElem = restructure(rootElem);
         
-        if (dataObj.fixed) fixed[dataObj.root] = dataObj.fixed;
+        if (dataObj.fixedOffsets) fixed[dataObj.root] = dataObj.fixedOffsets;
         if (dataObj.offsets) offsets[dataObj.root] = dataObj.offsets;
 
         rootElem.addEventListener("scroll", onScroll);
         window.addEventListener("resize", onResize);
         
         return {
-            destroy: (fullDestroy) => {onDestroy(fullDestroy);}
+            destroy: onDestroy,
+            removeOffset: removeOffset,
         }
 
 
@@ -134,6 +135,18 @@ const slickScroll = {
             }
         }
 
+        
+        // Allows offsets to be destroyed
+        function removeOffset(element) {
+            fixed[dataObj.root] = fixed[dataObj.root].filter(e => e != element);
+            offsets[dataObj.root] = offsets[dataObj.root].filter(e => e.element != element);
+
+            let elements = document.querySelectorAll(element)
+            for (e of elements) {
+                e.style.removeProperty("transform");
+                e.style.removeProperty("-webkit-transform");
+            }
+        }
 
         // Resize dummy on window resize to prevent over-scrolling
         function onResize() {
