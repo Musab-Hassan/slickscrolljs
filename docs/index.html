@@ -5,9 +5,26 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="style.min.css" rel="stylesheet">
-    <script src="../src/index.js" type="text/javascript"></script>
-    <script src="main.js" type="text/javascript"></script>
     <title>SlickScroll - Momentum Scrolling JS library</title>
+    <script src="../src/index.js" type="text/javascript"></script>
+
+    <!-- Slickscroll -->
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', () => {
+            slickScroll.momentumScroll({
+                root: "body",
+                duration: 1000,
+                easing: "cubic-bezier(0.25, 1, 0.5, 1)",
+                offsets: [
+                    {element: ".slow-parallax", speedY: 0.8}, 
+                    {element: ".faster-parallax", speedY: 0.7}
+                ],
+                fixedOffsets: [
+                    ".nav-container"
+                ]
+            });
+        }, false);
+    </script>
 </head>
 <body>
     <!-- Navigation Bar -->
@@ -23,6 +40,7 @@
         </div>
     </div>
 
+    <!-- Landing image and title -->
     <div class="section" id="landing" style="height: 100vh;">
         <div class="back-image slow-parallax">
             <img src="https://unsplash.com/photos/doqTQhFXQGQ/download?force=true">
@@ -36,6 +54,8 @@
             </div>
         </div>
     </div>
+
+    <!-- Images for slower parallax & details -->
     <div id="content" class="section">
         <div class="back-image-slide">
             <div class="stack slow-parallax">
