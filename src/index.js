@@ -15,6 +15,10 @@ const defaults = {
     root: "body",
     duration: 1000,
     easing: "cubic-bezier(0.15, 1, 0.4, 1)",
+    offsets: {
+        speedX: 1, 
+        speedY: 1
+    }
 }
 
 var offsets = {};
@@ -30,8 +34,10 @@ const slickScroll = {
         let rootElem = document.querySelector(dataObj.root);
         let fixedElem = restructure(rootElem);
         
-        if (dataObj.fixedOffsets) fixed[dataObj.root] = dataObj.fixedOffsets;
-        if (dataObj.offsets) offsets[dataObj.root] = dataObj.offsets;
+        fixed[dataObj.root] = dataObj.fixedOffsets;
+        offsets[dataObj.root] = dataObj.offsets;
+        if (!dataObj.offsets) offsets[dataObj.root] = [];
+        if (!dataObj.fixed) fixed[dataObj.root] = [];
 
         rootElem.addEventListener("scroll", onScroll);
         window.addEventListener("resize", onResize);
@@ -39,6 +45,8 @@ const slickScroll = {
         return {
             destroy: onDestroy,
             removeOffset: removeOffset,
+            addOffset: addOffset,
+            addFixedOffset: addFixedOffset
         }
 
 
@@ -64,10 +72,9 @@ const slickScroll = {
 
                 // Offset elements scrolling
                 if (offsets[dataObj.root]) {
-                    const defaultSpeed = {speedX: 1, speedY: 1};
                     
                     offsets[dataObj.root].forEach((e) => {
-                        e = Object.assign({}, defaultSpeed, e);
+                        e = Object.assign({}, defaults.offsets, e);
                         
                         let offset = `translate(${position.x * (e.speedX - 1)}px, ${position.y * (e.speedY - 1)}px)`;
                         elements = document.querySelectorAll(e.element);
@@ -136,6 +143,26 @@ const slickScroll = {
         }
 
         
+        // Add Offsets after intialization
+        function addOffset(obj) {
+            if (typeof obj !== "object") return;
+            if (!("element" in obj)) return;
+            // Check if offset is already set
+            const find = offsets[dataObj.root].find(i => i.element == obj.element);
+            if (find || !document.querySelector(obj.element)) return;
+
+            obj = Object.assign({}, defaults.offsets, obj);
+            offsets[dataObj.root].push(obj);
+        }
+
+
+        // Add fixedOffsets after intialization
+        function addFixedOffset(e) {
+            if (!document.querySelector(e) || fixed[dataObj.root].includes(e)) return;
+            fixed[dataObj.root].push(e);
+        }
+
+
         // Allows offsets to be destroyed
         function removeOffset(element) {
             fixed[dataObj.root] = fixed[dataObj.root].filter(e => e != element);
@@ -155,6 +182,7 @@ const slickScroll = {
     },
 
 
+    // The inView slickscroll function
     inView: function(element, events, listener) {
         var cacheIsInView;
         let e = document.querySelector(element);
