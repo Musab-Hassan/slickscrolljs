@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', () => { 
     slickScroll.momentumScroll({
         root: "body",
@@ -10,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
             element: ".faster-parallax",
             speedY: 0.7
         }],
-        fixed: [
+        fixedOffsets: [
             ".nav-container"
         ]
     });
