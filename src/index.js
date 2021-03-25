@@ -37,7 +37,7 @@ const slickScroll = {
         fixed[dataObj.root] = dataObj.fixedOffsets;
         offsets[dataObj.root] = dataObj.offsets;
         if (!dataObj.offsets) offsets[dataObj.root] = [];
-        if (!dataObj.fixed) fixed[dataObj.root] = [];
+        if (!dataObj.fixedOffsets) fixed[dataObj.root] = [];
 
         rootElem.addEventListener("scroll", onScroll);
         window.addEventListener("resize", onResize);
