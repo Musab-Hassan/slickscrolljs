@@ -6,15 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="style.min.css" rel="stylesheet">
     <title>SlickScroll - Momentum Scrolling JS library</title>
-    <script src="./slickscroll.min.js" type="text/javascript"></script>
-
+    <!-- <script src="./slickscroll.min.js" type="text/javascript"></script> -->
+    <script src="../src/index.js" type="text/javascript"></script>
     <!-- Slickscroll -->
     <script type="text/javascript">
+
         document.addEventListener('DOMContentLoaded', () => {
             slickScroll.momentumScroll({
                 root: "body",
                 duration: 1000,
-                easing: "cubic-bezier(0.25, 1, 0.5, 1)",
+                easing: "easeInOutQuart",
                 offsets: [
                     {element: ".slow-parallax", speedY: 0.8}, 
                     {element: ".faster-parallax", speedY: 0.7}
