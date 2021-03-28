@@ -11,13 +11,13 @@ slickScroll.momentumScroll(options)
 - options `Object` - *options for momentum scrolling*
 
     Name | Type | Required | Default | Description
-    - | - | - | - | -
+    | - | - | - | - | - |
     root | *String* | Yes | `body` | Element to apply momentum scroll on
     easing | *String* | Yes | `cubicBezier()` | Easing function
     duration | *Number* | Yes | `1000` | Duration of easing in milliseconds
-    fixedOffsets | *String[]* | No | | Array of position:fixed elements
-    offsets | *Object[]* | No | | Array of elements with custom speeds (See ***#2-Offsets***)
-    onScroll | *Function* | No | | Scroll listener for root element
+    fixedOffsets | *String[]* | No | - | Array of position:fixed elements
+    offsets | *Object[]* | No | - | Array of elements with custom speeds (See ***#2-Offsets***)
+    onScroll | *Function* | No | - | Scroll listener for root element
 
 ### Returns
 
