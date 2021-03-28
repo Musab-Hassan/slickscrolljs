@@ -59,7 +59,7 @@ var slickScroll;
     var offsets = {};
     var fixed = {};
 
-    // It's the var, the myth, the legend, SlickScroll
+    // SlickScroll
     slickScroll = {
         momentumScroll: function(dataObj) {
             // Set unset properties to defaults
@@ -306,40 +306,28 @@ var slickScroll;
 
 
         // The inView slickscroll function
-        inView: function(element, events, listener) {
-            var cacheIsInView;
-            var e = document.querySelector(element);
+        inView(element) {
+            let e = document.querySelector(element);
+            
+            let parent = scrollableParent(e);
+            let parentViewTop = parent.getBoundingClientRect().top;
+            let parentViewBottom = parentViewTop + parent.getBoundingClientRect().height;
 
-            if (e) {
-                isInView = isInView(e);
-                if (listener) {
-                    // TODO: Add listener event on scroll
-                } 
-                else if (isInView && events.inView) events.inView()
-                else if (!isInView && events.outView) events.outView()
-            }
+            var elemTop = e.getBoundingClientRect().top;
+            var elemBottom = elemTop + (e.getBoundingClientRect().height);
+
+            // Returns boolean on if element is in view or not
+            return (
+                ((elemBottom <= parentViewBottom) && (elemTop >= parentViewTop)) && 
+                ((elemBottom > 0) && (elemTop <= window.innerHeight))
+            );
 
             // Go through parent list to find first scrollable parent
             function scrollableParent(e) {
                 if (e == null) return document.body;
-                var overflow = window.getComputedStyle(e).getPropertyValue('overflow');
+                let overflow = window.getComputedStyle(e).getPropertyValue('overflow');
                 if (e.scrollHeight > e.clientHeight && overflow != "visible" && overflow != "hidden") return e;
                 return scrollableParent(e.parentNode);
-            }
-
-            // Returns boolean on if element is in view or not
-            function isInView(e) {
-                var parent = scrollableParent(e);
-                var parentViewTop = parent.getBoundingClientRect().top;
-                var parentViewBottom = parentViewTop + parent.getBoundingClientRect().height;
-
-                var elemTop = e.getBoundingClientRect().top;
-                var elemBottom = elemTop + (e.getBoundingClientRect().height);
-
-                return (
-                    ((elemBottom <= parentViewBottom) && (elemTop >= parentViewTop)) && 
-                    ((elemBottom > 0) && (elemTop <= window.innerHeight))
-                );
             }
         }
     }
