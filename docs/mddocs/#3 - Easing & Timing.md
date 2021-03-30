@@ -27,7 +27,7 @@ slickScroll.momentumScroll({
 The following is the list of Penner functions slickScroll supports
 
 Ease In | Ease Out | Ease In Out
-- | - | -
+| - | - | - |
 easeInSine | easeOutSine | easeInOutSine
 easeInQuad | easeOutQuad | easeInOutQuad
 easeInCubic | easeOutCubic | easeInOutCubic
