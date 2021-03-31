@@ -1,5 +1,5 @@
 <h1 align="center">
-    <img src="assets/logo.png"/>
+    <img src="/assets/Logo.png"/>
 </h1>
 
 Slickscroll is a JavaScript library that makes momentum & parallax scrolling quick and painless
