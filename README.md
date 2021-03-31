@@ -1,4 +1,6 @@
-# SlickScroll
+<h1 align="center">
+    <img src="assets/logo.png"/>
+</h1>
 
 Slickscroll is a JavaScript library that makes momentum & parallax scrolling quick and painless
 
@@ -10,8 +12,7 @@ Momentum Scrolling is the smooth and eased scrolling fancy websites have to allo
 </blockquote><br>
 
 
-## Download & Setup 
-<br>
+## Download & Setup
 
 ### Download
 Manually download from *Releases* or from the `dist` directory.
@@ -56,9 +57,16 @@ Complete documentation and Getting Started can be found in the `docs` folder or 
 
 ## Browser Support
 
-TODO: Add browser support info. I know it works in Chrome.
+Browser | Version
+| - | - |
+Chrome | 61+
+Edge | 80+
+IE | None
+Firefox | 48+
+Opera | 48+
+Safari | 13+
 
 ## About
 This repository is licensed under the MIT license.
 
-Copyright (2021) [Musab Hassan]("musabhassan.com")
+(c) Copyright (2021) Musab Hassan
