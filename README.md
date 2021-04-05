@@ -51,7 +51,7 @@ document.querySelector("body").style.overflowX = "hidden";
 ```
 
 ## Documentation
-Complete documentation and Getting Started can be found in the `docs` folder or on the [webdocs](https://slickscroll.musabhassan.com/webdocs)
+Complete documentation and Getting Started can be found in the `docs` directory.
 
 
 

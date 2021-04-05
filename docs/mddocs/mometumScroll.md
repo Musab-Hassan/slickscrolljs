@@ -16,7 +16,7 @@ slickScroll.momentumScroll(options)
     easing | *String* | Yes | `cubicBezier()` | Easing function
     duration | *Number* | Yes | `1000` | Duration of easing in milliseconds
     fixedOffsets | *String[]* | No | - | Array of position:fixed elements
-    offsets | *Object[]* | No | - | Array of elements with custom speeds (See ***#2-Offsets***)
+    offsets | *Object[]* | No | - | Array of elements with custom speeds (See ***#2-Offsets.md***)
     onScroll | *Function* | No | - | Scroll listener for root element
 
 ### Returns
@@ -24,7 +24,11 @@ slickScroll.momentumScroll(options)
 - addOffset `Function` - *Add offset (element with custom speed)*
     
     **Parameters**
-    - element `String` - *Element name to set as offset*
+    - offset `Object` - *Refer to **#2-Offsets.md** *
+
+        - element `String` - *Element name to set as offset*
+        - speedX `Number` - *overflow-x speed (Optional)*
+        - speedY `Number` - *overflow-y speed (Optional)*
 
 <br>
 
