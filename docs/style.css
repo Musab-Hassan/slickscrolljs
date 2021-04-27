@@ -14,6 +14,39 @@ body {
   height: 100vh;
 }
 
+.page-cover {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #1C1C1C;
+  color: white;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+  z-index: 100;
+}
+
+.page-cover.mobile {
+  display: none;
+}
+
+@media only screen and (max-width: 700px) {
+  .page-cover.mobile {
+    display: flex !important;
+  }
+}
+
+.page-cover .cover-title {
+  font-family: "Proxima-nova", sans-serif;
+  text-transform: uppercase;
+  font-size: 2em;
+}
+
 .nav-container {
   display: flex;
   justify-content: stretch;

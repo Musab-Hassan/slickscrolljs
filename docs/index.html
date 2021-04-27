@@ -24,13 +24,26 @@
                     {element: ".faster-parallax", speedY: 0.7}
                 ],
                 fixedOffsets: [
-                    ".nav-container"
+                    ".nav-container",
+                    ".page-cover"
                 ]
             });
         }, false);
     </script>
 </head>
 <body>
+    
+    <noscript>
+        <div class="page-cover">
+            <h1 class="cover-title">This webpage requires JavaScript</h1>
+        </div>
+    </noscript>
+
+    <!-- Mobile is not supported for this webpage because I'm lazy and it's kinda pointless -->
+    <div class="page-cover mobile">
+        <h1 class="cover-title">This webpage works only on larger screens and is best seen on a desktop or a laptop.</h1>
+    </div>
+
     <!-- Navigation Bar -->
     <div class="nav-container">
         <div class="align left">
