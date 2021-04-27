@@ -19,14 +19,9 @@ Manually download from *Releases* or from the `dist` directory.
 
 ### Setup
 
-ES6
+ES6 import
 ```javascript
 import slickScroll from 'slickscroll.es.min.js';
-```
-
-Traditional require
-```javascript
-const slickScroll = require('slickscroll');
 ```
 
 HTML script tag
@@ -34,14 +29,20 @@ HTML script tag
 <script src="slickscroll.min.js"></script>
 ```
 
+Node require
+```javascript
+const slickScroll = require('node_modules/slickscroll');
+```
+
 ## Hello World
-The hello world will apply the default momentum scrolling to the element you specify.
+The hello world will apply the momentum scrolling to the element you specify.
 ```javascript
 slickScroll.momentumScroll({
     root: "body"
 })
 ```
-Warning: The overflow property will be overridden with `auto`. If you wish to change overflow, you must modify it after the hello world. Here is an example to hide overflow-x.
+The overflow property will be overridden with `auto` upon initialization. If you wish to change overflow to anything else, you must modify it after the initialization. Here is an example to hide overflow-x.
+
 ```javascript
 slickScroll.momentumScroll({
     root: "body"
@@ -50,10 +51,7 @@ slickScroll.momentumScroll({
 document.querySelector("body").style.overflowX = "hidden";
 ```
 
-## Documentation
-Complete documentation and Getting Started can be found in the `docs` directory.
-
-
+All the valid options aswell as documentation and Getting Started can be found in the `docs` directory.
 
 ## Browser Support
 
@@ -66,7 +64,6 @@ Firefox | 48+
 Opera | 48+
 Safari | 13+
 
-## About
-This repository is licensed under the MIT license.
-
-(c) Copyright (2021) Musab Hassan
+### License
+MIT license.
+Copyright (2021) Musab Hassan
