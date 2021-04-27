@@ -4,18 +4,23 @@
 
 Slickscroll is a JavaScript library that makes momentum & parallax scrolling quick and painless
 
-[slickscroll.musabhassan.com](https://slickscroll.musabhassan.com)
+**View Demo: [slickscroll.musabhassan.com](https://slickscroll.musabhassan.com)**
 
 <blockquote>
 <strong><i>Momentum Scrolling</i></strong><br>
-Momentum Scrolling is the smooth and eased scrolling fancy websites have to allow the page to flow better when scrolling.
+Momentum Scrolling is the smooth and eased scrolling fancy websites have to allow the page to flow smoothly when scrolling.
 </blockquote><br>
 
 
 ## Download & Setup
 
 ### Download
-Manually download from *Releases* or from the `dist` directory.
+Manually download from *Releases*, from the `dist` directory, or npm.
+
+npm
+```
+npm install --save slickscrolljs
+```
 
 ### Setup
 
@@ -31,7 +36,7 @@ HTML script tag
 
 Node require
 ```javascript
-const slickScroll = require('node_modules/slickscroll');
+const slickScroll = require('slickscrolljs');
 ```
 
 ## Hello World
