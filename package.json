@@ -1,6 +1,6 @@
 {
-  "name": "slick-scroll",
-  "version": "1.0.0",
+  "name": "slickscrolljs",
+  "version": "1.0.1",
   "description": "Lightweight JavaScript library for slick looking momentum scrolling, handling scroll events, and everything else scrolling",
   "module": "src/index.es.js",
   "main": "src/index.js",
