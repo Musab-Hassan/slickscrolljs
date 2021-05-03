@@ -45,7 +45,22 @@ task('transpileES5', function() {
         .pipe(dest('dist/'));
 });
 
-task('build', parallel('transpileES6', 'transpileES5'));
+task('transpileNode', function () {
+    return src("src/index.ts")
+        .pipe(ts({
+            noImplicitAny: true,
+            target: "es5",
+            module: "commonjs",
+            lib: ["DOM", "es5"],
+            moduleResolution: "node",
+        }))
+
+        .pipe(uglify())
+        .pipe(rename('slickscroll.min.node.js'))
+        .pipe(dest('dist/'));
+});
+
+task('build', parallel('transpileES6', 'transpileES5', 'transpileNode'));
 
 task('watch', function() {
     watch('src/index.ts', parallel('build'));
