@@ -29,29 +29,37 @@ npm install --save slickscrolljs
 ES6 import
 ```javascript
 import slickScroll from 'slickscroll.es.min.js';
+
+const slick = new slickScroll;
 ```
 
 HTML script tag
 ```html
 <script src="slickscroll.min.js"></script>
+
+<script type="text/javascript"> 
+    var slick = new slickScroll;
+</script>
 ```
 
 Node require
 ```javascript
 const slickScroll = require('slickscrolljs');
+
+const slick = new slickScroll.default;
 ```
 
 ## Hello World
 The hello world will apply the momentum scrolling to the element you specify.
 ```javascript
-slickScroll.momentumScroll({
+slick.momentumScroll({
     root: "body"
 })
 ```
 The overflow property will be overridden with `auto` upon initialization. If you wish to change overflow to anything else, you must modify it after the initialization. Here is an example to hide overflow-x.
 
 ```javascript
-slickScroll.momentumScroll({
+slick.momentumScroll({
     root: "body"
 });
 
