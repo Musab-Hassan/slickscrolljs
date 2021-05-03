@@ -23,7 +23,7 @@ Let's take the following markup.
 To give the `#back-image` element 80% of the vertical scrolling speed, we use the following options.
 
 ```javascript
-slickScroll.momentumScroll({
+slick.momentumScroll({
     root: "body",
     offsets: [
        {
@@ -58,14 +58,14 @@ Let's take a look at an example.
 }
 ```
 ```javascript
-slickScroll.momentumScroll({
+slick.momentumScroll({
     root: "body",
 });
 ```
 In this example, the fixed `#nav-bar` will not stay fixed as it is inside the moving root element. To make it fixed, we must make it a fixedOffset. Here is the correct way of making `#nav-bar` fixed.
 
 ```javascript
-slickScroll.momentumScroll({
+slick.momentumScroll({
     root: "body",
     fixedOffets: [
         "#nav-bar"
@@ -79,7 +79,7 @@ Offsets and fixedOffsets can also be added after initialization dynamically. The
 
 In this example we have momentumScroll with default options on the body.
 ```javascript
-let scrollObj = slickScroll.momentumScroll({
+let scrollObj = slick.momentumScroll({
     root: "body",
 });
 ```

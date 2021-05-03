@@ -11,7 +11,10 @@ Full details about the momentumScroll function can be found in *momentumScroll*.
 Momentum scrolling is initialized by using the  momentumScroll function. Here is an example to apply the default momentum scrolling to the body. 
 
 ```javascript
-let instance = slickScroll.momentumScroll({
+// See README on how to import slickscroll
+let slick = new slickScroll;
+
+let instance = slick.momentumScroll({
     root: "body"
 });
 ```
@@ -32,7 +35,7 @@ document.querySelector("body").style.overflowX = "hidden";
 Created instances of momentumScroll can be destroyed and the root can be reverted to its original state.
 
 ```javascript
-let instance = slickScroll.momentumScroll({
+let instance = slick.momentumScroll({
     root: "body",
     ...
 });

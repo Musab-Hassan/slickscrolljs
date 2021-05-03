@@ -4,7 +4,7 @@ As an added bonus, slickScroll also offers the `inView` function. The inView fun
 
 It can be called on its own
 ```javascript
-if (slickScroll.inView(".link")) {
+if (slick.inView(".link")) {
     ...
 }
 ```
@@ -13,7 +13,7 @@ or combined with a scroll event
 let body = document.querySelector("body");
 
 body.addEventListener("scroll", () => {
-    if (slickScroll.inView(".link")) {
+    if (slick.inView(".link")) {
         ...
     }
 })
@@ -24,7 +24,7 @@ body.addEventListener("scroll", () => {
 The `momentumScroll` function also has a built-in `onScroll` event which can be set during initialization making it a shorter way of adding a scroll event on the root element.
 
 ```javascript
-slickScroll.momentumScroll({
+slick.momentumScroll({
     root: "body",
     onScroll: function(e) {
         ... //Whenever user scrolls in the root (body)
@@ -34,7 +34,7 @@ slickScroll.momentumScroll({
 
 The `momentumScroll` function can also be combined with the `inView` function to always check if an element is `inView` or not.
 ```javascript
-slickScroll.momentumScroll({
+slick.momentumScroll({
     root: "body",
     onScroll: () => {
         if (slickScroll.inView("#button")) {
