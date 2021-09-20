@@ -7,7 +7,7 @@ slickScroll.inView(element)
 ```
 
 ### Parameters
-- element `String` - *The element which needs to be checked*
+- element `String` | `HTMLElement` - *The element which needs to be checked*
 
 ### Returns
 - `Boolean` - *If element is in View then returns true else false*

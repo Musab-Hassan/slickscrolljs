@@ -3,9 +3,9 @@ The momentumScroll function's timing and easing can also be changed. SlickScroll
 
 ### Easing
 
-Slickscroll supports the cubic beziers and Penner functions for easing.
+Slickscroll supports cubic beziers and the Penner Easing functions for easing.
 
-The default easing function is `cubicBezier(0.15, 1, 0.4, 1)` however it can be changed by modifying the easing option.
+The default easing function is `cubicBezier(0.15, 1, 0.4, 1)`. It can be changed by modifying the easing option.
 
 ```javascript
 slick.momentumScroll({
@@ -24,7 +24,7 @@ slick.momentumScroll({
 
 ### Penner Functions
 
-The following is the list of Penner functions slickScroll supports
+List of Penner functions slickScroll supports:
 
 Ease In | Ease Out | Ease In Out
 | - | - | - |
@@ -39,15 +39,15 @@ easeInCirc | easeOutCirc | easeInOutCirc
 
 # Timing
 
-Along with easing, the duration of can also be changed to modify the scroll easing. 
+Along with easing, the duration can also be changed to modify the scroll speed. 
 
-The default duration is 1 sec or 1000 ms. To set a different duration, the `duration` option must be set with milliseconds.
+The default duration is 1000 ms. To set a different duration, the `duration` option can be changed with a value in milliseconds.
 
 In this example, the duration is set to 2.5 seconds.
 ```javascript
 slick.momentumScroll({
     root: "body",
-    timing: 2500
+    duration: 2500
 });
 ```
 
@@ -58,19 +58,19 @@ Easings can be modified through the `easing` option.
 
 ```javascript
 slickScroll.momentumScroll({
-    easing: String // Penner function or bezier curve
+    easing: String // Penner function name or bezier curve
 });
 ```
-Default value is `cubicBezier(0.15, 1, 0.4, 1)`
+Default value: `cubicBezier(0.15, 1, 0.4, 1)`
 
-The complete scroll animation time can be modified through the `duration` option. 
+The scroll animation duration can be modified with the `duration` option. 
 
 ```javascript
 slickScroll.momentumScroll({
     duration: Number // Time in miliseconds
 )};
 ```
-Default value is `1000`
+Default value: `1000`
 
 Next Suggested document.
 #### **#4 - inView**

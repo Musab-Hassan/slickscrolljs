@@ -25,14 +25,10 @@ The root option specifies the element to contain the momentum scrolling within.
 document.querySelector("body").style.overflowX = "hidden";
 ```
 
-<blockquote><strong>
-    WARNING:
-    Event listeners should be added after momentumScroll has been initialized. Since the DOM is restructured, all event listeners within the root element will be destroyed on initialization.
-</strong></blockquote>
 <br>
 
 ### Destroy
-Created instances of momentumScroll can be destroyed and the root can be reverted to its original state.
+Instances of momentumScroll can be destroyed, removing the momentum scrolling effect and reverting the root to its original state.
 
 ```javascript
 let instance = slick.momentumScroll({
@@ -40,11 +36,8 @@ let instance = slick.momentumScroll({
     ...
 });
 
-instance.destroy(true);
+instance.destroy();
 ```
-
-The destroy function takes one boolean argument, `fullDestroy`. Both true and false will destroy the instance and remove all transformations and listeners. **However, setting `fullDestroy` to true will also revert the DOM structure of the root element back to its original state destroying all event listeners inside the root element. False will keep the DOM as is and will preserve the event listeners added.**
-
 
 Next Suggested document.
 #### **#2 - Offsets**
