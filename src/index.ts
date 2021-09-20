@@ -153,7 +153,6 @@ export default class slickScroll {
 
         // Scroll Event on root element
         function onScroll(e: any) {
-            (dataObj.fixedOffsets![0] as HTMLElement).style.backgroundColor = "white";
             let activeOffsets = getFromOffsetArray(THIS.offsets, selectNode(dataObj.root));
             let activeFixedOffsets = getFromOffsetArray(THIS.fixed, selectNode(dataObj.root));
             
@@ -268,24 +267,22 @@ export default class slickScroll {
 
         // TODO: Remove destroyed item from both offset arrays
         // Unset onscroll and return dom to original state
-        function onDestroy(fullDestroy: boolean) {
+        function onDestroy() {
             let activeOffsets = getFromOffsetArray(THIS.offsets, selectNode(dataObj.root));
             let activeFixedOffsets = getFromOffsetArray(THIS.fixed, selectNode(dataObj.root));
 
-            let wrapper: any = document.querySelector(dataObj.root + " ._SS_wrapper");
+            let wrapper: any = selectNode(dataObj.root).querySelector("._SS_wrapper");
+
             rootElem.removeEventListener("scroll", onScroll);
             window.removeEventListener("resize", onResize);
-            // Revert element root's node to original state if fullDestroy
-            if (fullDestroy) {
-                for (const e of wrapper.children as any) {
-                    e.style.removeProperty("transform");
-                    rootElem.appendChild(e.cloneNode(true));
-                }
-                wrapper.remove();
-            } else {
-                wrapper.removeAttribute("style");
+            // Revert element root's node to original state by removing all slickscroll classes
+            for (let i = wrapper.children.length; i > 0; i--) {
+                if (wrapper.children[i-1].removeProperty) wrapper.children[i-1].removeProperty("transform");
+                rootElem.insertBefore(wrapper.children[i-1], rootElem.children[0]);
             }
-            document.querySelector(dataObj.root + " ._SS_dummy")!.remove();
+            wrapper.remove();
+
+            selectNode(dataObj.root).querySelector("._SS_dummy")!.remove();
             rootElem.style.removeProperty("overflow");
             rootElem.style.removeProperty("position");
 
@@ -295,18 +292,25 @@ export default class slickScroll {
             function clearTransform(array: any[]) {
                 if (array) {
                     array.forEach((e) => {
-                        let elements = document.querySelectorAll(e.element);
-                        if (!e.element) elements = document.querySelectorAll(e);
-                        for (e of elements as any) {
-                            e.style.removeProperty("transform");
-                            e.style.removeProperty("-webkit-transform");
+                        let elements = selectNode(e.element, true);
+                        if (!e.element) elements = selectNode(e, true);
+
+                        if (NodeList.prototype.isPrototypeOf(elements)) {
+                            for (e of elements as any) {
+                                e.style.removeProperty("transform");
+                                e.style.removeProperty("-webkit-transform");
+                            }
+                            return;
                         }
+
+                        elements.style.removeProperty("transform");
+                        elements.style.removeProperty("-webkit-transform");
                     });
                 }
             }
         }
 
-        // TODO: Fix addOffest
+        // TODO: Fix addOffest with a node
         // Add Offsets after intialization
         function addOffset(obj: { element?: string | HTMLElement | HTMLBodyElement | null, speedY: number, speedX: number}) {
             let activeOffset = getFromOffsetArray(THIS.offsets, selectNode(dataObj.root));
@@ -323,7 +327,7 @@ export default class slickScroll {
             pushToOffsetArray(THIS.offsets, dataObj.root, obj);
         }
 
-        // TODO: Fix addFixedOffset
+        // TODO: Fix addFixedOffset with a node
         // Add fixedOffsets after intialization
         function addFixedOffset(element: string | HTMLElement | HTMLBodyElement | null) {
             let activeFixedOffsets = getFromOffsetArray(THIS.fixed, selectNode(dataObj.root));
@@ -374,8 +378,8 @@ export default class slickScroll {
             child.classList.add("_SS_wrapper");
             dummy.classList.add("_SS_dummy");
 
-            for (const e of root.children) {
-                child.appendChild(e.cloneNode(true));
+            for (let i = root.children.length; i > 0; i--) {
+                child.insertBefore(root.children[(i-1)], child.children[0]);
             }
 
             root.innerHTML = "";
