@@ -212,7 +212,7 @@ export default class slickScroll {
 
 
 
-            // Provides calculated value for transforming based on scroll position
+            // Returns calculated translate value based on scroll position
             function easeFrames(
                 tl: {x: number, y: number}, 
                 pl: {x: number, y: number}, 
@@ -227,8 +227,7 @@ export default class slickScroll {
                 let diffY = ((tl.y * -1) - pl.y);
                 let dx, dy;
 
-                // Transfrom frame loop
-                // Future TODO: Fix performance
+                // Animation frame loop
                 (function loop() {
 
                     let t = (Date.now() - startStamp) / dataObj.duration!;
@@ -317,8 +316,8 @@ export default class slickScroll {
             if (activeOffset.length <= 0) activeOffset = getFromOffsetArray(THIS.offsets, dataObj.root);
 
             obj.element = selectNode(obj.element);
-            if (typeof obj !== "object") { console.warn("Element Node not found for offset"); return; }
-            if (!("element" in obj)) { console.warn("Element Node not found for offset"); return; }
+            if (typeof obj !== "object") { console.warn("Node not found for addOffset"); return; }
+            if (!("element" in obj)) { console.warn("Node not found for addOffset"); return; }
             // Check if offset is already set
             const find = activeOffset.find((i: any) => i.element == obj.element);
             if (find || !obj.element) return;
@@ -337,7 +336,6 @@ export default class slickScroll {
             pushToOffsetArray(THIS.fixed, dataObj.root, selectNode(element));
         }
 
-        // TODO: Test if removeOffset works with node
         // Remove specific node from offset or fixedoffset
         function removeOffset(element: string | HTMLElement | HTMLBodyElement | null) {
             
@@ -355,9 +353,6 @@ export default class slickScroll {
                 THIS.fixed[fixedIndex].items = removeFromOffsetArray(activeFixedItem, selectNode(element));
                 THIS.fixed[fixedIndex].items = removeFromOffsetArray(activeFixedItem, element);
             }
-
-            console.log(activeFixedItem, activeItem);
-            console.log(THIS.offsets[offsetIndex].items, THIS.fixed[offsetIndex].items)
         }
 
         // Resize dummy on window resize to prevent over-scrolling
@@ -581,15 +576,23 @@ function removeFromOffsetArray(array: any[], item: any) {
     if (index > -1) {
         
         let elements = array[index];
-        if (typeof elements == "object") elements = elements.element;
+        if (typeof elements == "object" && !elements.nodeName) elements = elements.element;
 
         elements = selectNode(elements, true);
 
-        for (let e of elements as any) {
-            e.style.removeProperty("transform");
-            e.style.removeProperty("-webkit-transform");
-            if (e.style.position == "fixed") e.style.removeProperty("position");
+        if (NodeList.prototype.isPrototypeOf(elements)) {
+            for (let e of elements as any) {
+                e.style.removeProperty("transform");
+                e.style.removeProperty("-webkit-transform");
+                if (e.style.position == "fixed") e.style.removeProperty("position");
+            }
+            return;
         }
+
+        elements.style.removeProperty("transform");
+        elements.style.removeProperty("-webkit-transform");
+        if (elements.style.position == "fixed") elements.style.removeProperty("position");
+
         array.splice(index, 1);
     }
     return array;
