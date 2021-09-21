@@ -3,7 +3,8 @@
 *           © Musab Hassan
 *
 *        For building this file, 
-*         refer to gulpfile.ts
+*      refer to gulpfile.ts or type
+*             gulp tasks.
 *
 ***************************************/
 
