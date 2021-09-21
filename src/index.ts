@@ -1,17 +1,12 @@
 /**************************************
-*          # SlickScrollJS #
+*            SlickScrollJS
+*           © Musab Hassan
 *
-*          Copyright (2021)
-*            Musab Hassan
-*
-*    https://github.com/Musab-Hassan/
+*        For building this file, 
+*         refer to gulpfile.ts
 *
 ***************************************/
 
-/*
-*   RUN 'gulp build' TO BUILD OR RUN
-*    "gulp watch" TO WATCH FOR CHANGES
-*/
 
 
 // MomentumScroll object interface
@@ -27,6 +22,9 @@ interface momentumScrollStruct {
     }],
     onScroll?(func: () => any): any
 }
+
+
+
 
 
 export default class slickScroll {
@@ -515,7 +513,7 @@ export default class slickScroll {
 
 
     // The inView slickscroll function
-    inView(element: string) {
+    public inView(element: string) {
         let e = <any> document.querySelector(element);
 
         let parent = scrollableParent(e);
