@@ -215,7 +215,6 @@ export default class slickScroll {
             });
 
 
-
             // Returns calculated translate value based on scroll position
             function easeFrames(
                 tl: {x: number, y: number}, 
@@ -268,12 +267,10 @@ export default class slickScroll {
             }
         }
 
-        // TODO: Remove destroyed item from both offset arrays
         // Unset onscroll and return dom to original state
         function onDestroy() {
             let activeOffsets = getFromOffsetArray(THIS.offsets, selectNode(dataObj.root));
             let activeFixedOffsets = getFromOffsetArray(THIS.fixed, selectNode(dataObj.root));
-
             let wrapper: any = selectNode(dataObj.root).querySelector("._SS_wrapper");
 
             rootElem.removeEventListener("scroll", onScroll);
@@ -291,6 +288,13 @@ export default class slickScroll {
 
             clearTransform(activeOffsets);
             clearTransform(activeFixedOffsets);
+
+            // Remove instance from fixedOffsets and offsets arrays
+            let index;
+            index = (THIS.fixed as any[]).findIndex(obj => obj.element == selectNode(dataObj.root));
+            THIS.fixed.splice(index, 1);
+            index = (THIS.offsets as any[]).findIndex(obj => obj.element == selectNode(dataObj.root));
+            THIS.offsets.splice(index, 1);
 
             function clearTransform(array: any[]) {
                 if (array) {
@@ -565,12 +569,12 @@ function setOffsetArray(array: any[], id: any, data?: any[]) {
 }
 
 
-
 // Add an offset or fixedOffset
 function pushToOffsetArray(array: any[], id: any, data?: any) {
     let index = array.findIndex(obj => obj.element == id);
     array[index].items.push(data);
 }
+
 
 // Remove specific offset from fixedOffsets and offsets
 function removeFromOffsetArray(array: any[], item: any) {
@@ -606,7 +610,6 @@ function getFromOffsetArray(array: any[], id: any) {
     let item = array.filter(obj => obj.element == id);
     return item[0].items;
 }
-
 
 
 // Return node incase string is provided
