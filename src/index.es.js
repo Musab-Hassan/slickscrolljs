@@ -1,10 +1,10 @@
 /**************************************
-*          # SlickScrollJS #
+*            SlickScrollJS
+*           © Musab Hassan
 *
-*          Copyright (2021)
-*            Musab Hassan
-*
-*    https://github.com/Musab-Hassan/
+*        For building this file,
+*      refer to gulpfile.ts or type
+*             gulp tasks.
 *
 ***************************************/
 export default class slickScroll {
@@ -48,30 +48,30 @@ export default class slickScroll {
             { name: "easeInOutCirc", value: [0.85, 0, 0.15, 1] }
         ];
         // Offset cache
-        this.fixed = {};
-        this.offsets = {};
+        this.fixed = [];
+        this.offsets = [];
     }
     // mometumScrolling
     momentumScroll(dataObj) {
-        const THIS = this; // assinged to class's this to allow access from within functions
-        dataObj = Object.assign({}, this.defaults, dataObj); // assign defaults to parameter object if not assigned
+        let THIS = this;
+        // class this for access from inner functions
+        dataObj = Object.assign({}, this.defaults, dataObj); // assign defaults to dataObj object if any missing properties
         let pl, startStamp;
-        let rootElem = document.querySelector(dataObj.root);
-        this.fixed[dataObj.root] = dataObj.fixedOffsets;
-        this.offsets[dataObj.root] = dataObj.offsets;
-        if (!dataObj.offsets)
-            this.offsets[dataObj.root] = [];
-        if (!dataObj.fixedOffsets)
-            this.fixed[dataObj.root] = [];
-        // Check if client is phone or unsupported (true if phone or unsupported)
-        if (checkCompatiblity()) {
+        let rootElem = selectNode(dataObj.root);
+        // set any assigned offsets or fixedOffsets
+        setOffsetArray(this.fixed, selectNode(dataObj.root), dataObj.fixedOffsets);
+        setOffsetArray(this.offsets, selectNode(dataObj.root), dataObj.offsets);
+        // if client is phone or unsupported
+        if (!isCompatible()) {
+            let activeFixedOffsets = getFromOffsetArray(this.fixed, selectNode(dataObj.root));
             rootElem.addEventListener("scroll", (event) => {
+                let activeOffsets = getFromOffsetArray(this.offsets, selectNode(dataObj.root));
                 // Offset elements scrolling
-                if (this.offsets[dataObj.root]) {
-                    this.offsets[dataObj.root].forEach((e) => {
+                if (activeOffsets) {
+                    activeOffsets.forEach((e) => {
                         e = Object.assign({}, this.defaults.offsets, e);
                         let offset = `translate(${event.target.scrollLeft * (1 - e.speedX)}px, ${event.target.scrollTop * (1 - e.speedY)}px)`;
-                        let elements = document.querySelectorAll(e.element);
+                        let elements = selectNode(e.element, true);
                         for (e of elements) {
                             e.style.webkitTransform = offset;
                             e.style.transform = offset;
@@ -80,9 +80,9 @@ export default class slickScroll {
                 }
             });
             // Fixed elements
-            if (this.fixed[dataObj.root]) {
-                this.fixed[dataObj.root].forEach((e) => {
-                    let elements = document.querySelectorAll(e);
+            if (activeFixedOffsets) {
+                activeFixedOffsets.forEach((e) => {
+                    let elements = selectNode(e, true);
                     for (e of elements) {
                         e.style.position = "fixed";
                     }
@@ -96,6 +96,7 @@ export default class slickScroll {
                 addFixedOffset: addFixedOffset
             };
         }
+        // if client is desktop and supported
         let fixedElem = DOMRestructure(rootElem);
         window.addEventListener("resize", onResize);
         rootElem.addEventListener("scroll", onScroll);
@@ -105,8 +106,11 @@ export default class slickScroll {
             addOffset: addOffset,
             addFixedOffset: addFixedOffset
         };
+        /* Functions for momentumScroll*/
         // Scroll Event on root element
         function onScroll(e) {
+            let activeOffsets = getFromOffsetArray(THIS.offsets, selectNode(dataObj.root));
+            let activeFixedOffsets = getFromOffsetArray(THIS.fixed, selectNode(dataObj.root));
             if (dataObj.onScroll)
                 dataObj.onScroll(e);
             pl = { y: rootElem.scrollTop, x: rootElem.scrollLeft };
@@ -122,38 +126,49 @@ export default class slickScroll {
                 fixedElem.fixed.style.webkitTransform = translate;
                 fixedElem.fixed.style.transform = translate;
                 // Offset elements scrolling
-                if (THIS.offsets[dataObj.root]) {
-                    THIS.offsets[dataObj.root].forEach((e) => {
+                if (activeOffsets) {
+                    activeOffsets.forEach((e) => {
                         e = Object.assign({}, THIS.defaults.offsets, e);
                         let offset = `translate(${position.x * (e.speedX - 1)}px, ${position.y * (e.speedY - 1)}px)`;
-                        let elements = document.querySelectorAll(e.element);
-                        for (e of elements) {
-                            e.style.webkitTransform = offset;
-                            e.style.transform = offset;
+                        let elements = selectNode(e.element, true);
+                        if (NodeList.prototype.isPrototypeOf(elements)) {
+                            for (let e of elements) {
+                                e.style.webkitTransform = offset;
+                                e.style.transform = offset;
+                            }
+                        }
+                        else {
+                            elements.style.webkitTransform = offset;
+                            elements.style.transform = offset;
                         }
                     });
                 }
                 // Fixed elements
-                if (THIS.fixed[dataObj.root]) {
-                    THIS.fixed[dataObj.root].forEach((e) => {
+                if (activeFixedOffsets) {
+                    for (let i = 0; i < activeFixedOffsets.length; i++) {
                         let offset = `translate(${position.x * -1}px, ${position.y * -1}px)`;
-                        let elements = document.querySelectorAll(e);
-                        for (e of elements) {
-                            e.style.webkitTransform = offset;
-                            e.style.transform = offset;
+                        let elements = selectNode(activeFixedOffsets[i], true);
+                        if (NodeList.prototype.isPrototypeOf(elements)) {
+                            for (let e of elements) {
+                                e.style.webkitTransform = offset;
+                                e.style.transform = offset;
+                            }
                         }
-                    });
+                        else {
+                            elements.style.webkitTransform = offset;
+                            elements.style.transform = offset;
+                        }
+                    }
                 }
             });
-            // Provides calculated value for transforming based on scroll position
+            // Returns calculated translate value based on scroll position
             function easeFrames(tl, pl, startStamp, onIterate) {
                 // Parse easing string into floats
                 let easing = parseBezier(dataObj.easing);
                 let diffX = ((tl.x * -1) - pl.x);
                 let diffY = ((tl.y * -1) - pl.y);
                 let dx, dy;
-                // Transfrom frame loop
-                // Future TODO: Fix performance
+                // Animation frame loop
                 (function loop() {
                     let t = (Date.now() - startStamp) / dataObj.duration;
                     if (t > 1)
@@ -186,71 +201,89 @@ export default class slickScroll {
             }
         }
         // Unset onscroll and return dom to original state
-        function onDestroy(fullDestroy) {
-            if (typeof fullDestroy == "undefined")
-                fullDestroy = false;
-            let wrapper = document.querySelector(dataObj.root + " ._SS_wrapper");
+        function onDestroy() {
+            let activeOffsets = getFromOffsetArray(THIS.offsets, selectNode(dataObj.root));
+            let activeFixedOffsets = getFromOffsetArray(THIS.fixed, selectNode(dataObj.root));
+            let wrapper = selectNode(dataObj.root).querySelector("._SS_wrapper");
             rootElem.removeEventListener("scroll", onScroll);
             window.removeEventListener("resize", onResize);
-            // Revert element DOM structure to original state if fullDestroy
-            if (fullDestroy) {
-                for (const e of wrapper.children) {
-                    e.style.removeProperty("transform");
-                    rootElem.appendChild(e.cloneNode(true));
-                }
-                wrapper.remove();
+            // Revert element root's node to original state by removing all slickscroll classes
+            for (let i = wrapper.children.length; i > 0; i--) {
+                if (wrapper.children[i - 1].removeProperty)
+                    wrapper.children[i - 1].removeProperty("transform");
+                rootElem.insertBefore(wrapper.children[i - 1], rootElem.children[0]);
             }
-            else {
-                wrapper.removeAttribute("style");
-            }
-            document.querySelector(dataObj.root + " ._SS_dummy").remove();
+            wrapper.remove();
+            selectNode(dataObj.root).querySelector("._SS_dummy").remove();
             rootElem.style.removeProperty("overflow");
             rootElem.style.removeProperty("position");
-            clearTransform(THIS.fixed[dataObj.root]);
-            clearTransform(THIS.offsets[dataObj.root]);
+            clearTransform(activeOffsets);
+            clearTransform(activeFixedOffsets);
+            // Remove instance from fixedOffsets and offsets arrays
+            let index;
+            index = THIS.fixed.findIndex(obj => obj.element == selectNode(dataObj.root));
+            THIS.fixed.splice(index, 1);
+            index = THIS.offsets.findIndex(obj => obj.element == selectNode(dataObj.root));
+            THIS.offsets.splice(index, 1);
             function clearTransform(array) {
                 if (array) {
                     array.forEach((e) => {
-                        let elements = document.querySelectorAll(e.element);
+                        let elements = selectNode(e.element, true);
                         if (!e.element)
-                            elements = document.querySelectorAll(e);
-                        for (e of elements) {
-                            e.style.removeProperty("transform");
-                            e.style.removeProperty("-webkit-transform");
+                            elements = selectNode(e, true);
+                        if (NodeList.prototype.isPrototypeOf(elements)) {
+                            for (e of elements) {
+                                e.style.removeProperty("transform");
+                                e.style.removeProperty("-webkit-transform");
+                            }
+                            return;
                         }
+                        elements.style.removeProperty("transform");
+                        elements.style.removeProperty("-webkit-transform");
                     });
                 }
             }
         }
         // Add Offsets after intialization
         function addOffset(obj) {
+            let activeOffset = getFromOffsetArray(THIS.offsets, selectNode(dataObj.root));
+            if (activeOffset.length <= 0)
+                activeOffset = getFromOffsetArray(THIS.offsets, dataObj.root);
             if (typeof obj !== "object")
                 return;
-            if (!("element" in obj))
+            if (!("element" in obj)) {
+                console.warn("Node not found for addOffset");
                 return;
+            }
             // Check if offset is already set
-            const find = THIS.offsets[dataObj.root].find((i) => i.element == obj.element);
-            if (find || !document.querySelector(obj.element))
+            const find = activeOffset.find((i) => i.element == obj.element);
+            if (find || !obj.element)
                 return;
             obj = Object.assign({}, THIS.defaults.offsets, obj);
-            THIS.offsets[dataObj.root].push(obj);
+            pushToOffsetArray(THIS.offsets, dataObj.root, obj);
         }
         // Add fixedOffsets after intialization
-        function addFixedOffset(e) {
-            if (!document.querySelector(e) || THIS.fixed[dataObj.root].includes(e))
+        function addFixedOffset(element) {
+            let activeFixedOffsets = getFromOffsetArray(THIS.fixed, selectNode(dataObj.root));
+            if (activeFixedOffsets.length <= 0)
+                activeFixedOffsets = getFromOffsetArray(THIS.offsets, dataObj.root);
+            if (!selectNode(element, true) || activeFixedOffsets.includes(element))
                 return;
-            THIS.fixed[dataObj.root].push(e);
+            pushToOffsetArray(THIS.fixed, selectNode(dataObj.root), element);
         }
-        // Allows offsets to be destroyed
+        // Remove specific node from offset or fixedoffset
         function removeOffset(element) {
-            THIS.fixed[dataObj.root] = THIS.fixed[dataObj.root].filter((e) => e != element);
-            THIS.offsets[dataObj.root] = THIS.offsets[dataObj.root].filter((e) => e.element != element);
-            let elements = document.querySelectorAll(element);
-            for (let e of elements) {
-                e.style.removeProperty("transform");
-                e.style.removeProperty("-webkit-transform");
-                if (e.style.position == "fixed")
-                    e.style.removeProperty("position");
+            let activeItem = getFromOffsetArray(THIS.offsets, selectNode(dataObj.root));
+            let activeFixedItem = getFromOffsetArray(THIS.fixed, selectNode(dataObj.root));
+            let offsetIndex = THIS.offsets.findIndex((e) => e.element == selectNode(dataObj.root));
+            let fixedIndex = THIS.fixed.findIndex((e) => e.element == selectNode(dataObj.root));
+            if (activeItem.length > 0) {
+                THIS.offsets[offsetIndex].items = removeFromOffsetArray(activeItem, selectNode(element, true));
+                THIS.offsets[offsetIndex].items = removeFromOffsetArray(activeItem, element);
+            }
+            if (activeFixedItem.length > 0) {
+                THIS.fixed[fixedIndex].items = removeFromOffsetArray(activeFixedItem, selectNode(element, true));
+                THIS.fixed[fixedIndex].items = removeFromOffsetArray(activeFixedItem, element);
             }
         }
         // Resize dummy on window resize to prevent over-scrolling
@@ -267,8 +300,8 @@ export default class slickScroll {
             let dummy = document.createElement('div');
             child.classList.add("_SS_wrapper");
             dummy.classList.add("_SS_dummy");
-            for (const e of root.children) {
-                child.appendChild(e.cloneNode(true));
+            for (let i = root.children.length; i > 0; i--) {
+                child.insertBefore(root.children[(i - 1)], child.children[0]);
             }
             root.innerHTML = "";
             root.style.overflow = "auto";
@@ -294,14 +327,14 @@ export default class slickScroll {
                 dummy: root.querySelector("div._SS_dummy")
             };
         }
-        // Will check for mobile & unsupported browsers
-        function checkCompatiblity() {
+        // Check for mobile & unsupported browsers
+        function isCompatible() {
             let check = false;
             (function (a) { if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4)))
                 check = true; })(navigator.userAgent || navigator.vendor);
             if (!check && CSS.supports)
                 check = !CSS.supports("position", "sticky");
-            return check;
+            return !check;
         }
         // Typescript version of bezier-easing https://github.com/gre/bezier-easing/blob/master/src/index.js
         function bezier(mX1, mY1, mX2, mY2) {
@@ -384,7 +417,13 @@ export default class slickScroll {
     }
     // The inView slickscroll function
     inView(element) {
-        let e = document.querySelector(element);
+        if (!element)
+            return;
+        if (NodeList.prototype.isPrototypeOf(element)) {
+            console.warn("Multiple elements are not selectable at inView");
+            return;
+        }
+        let e = selectNode(element);
         let parent = scrollableParent(e);
         let parentViewTop = parent.getBoundingClientRect().top;
         let parentViewBottom = parentViewTop + parent.getBoundingClientRect().height;
@@ -402,5 +441,76 @@ export default class slickScroll {
                 return e;
             return scrollableParent(e.parentNode);
         }
+    }
+}
+/* Helper Functions */
+// Find and insert into array of fixedOffsets or offsets
+function setOffsetArray(array, id, data) {
+    let itemArr = array.filter(obj => obj.element == id);
+    if (itemArr.length > 0) {
+        if (data)
+            itemArr[0].items = data;
+        itemArr[0].element = id;
+    }
+    else {
+        let obj;
+        if (data) {
+            obj = { element: id, items: data };
+        }
+        else {
+            obj = { element: id };
+        }
+        array.push(obj);
+    }
+}
+// Add an offset or fixedOffset
+function pushToOffsetArray(array, id, data) {
+    let index = array.findIndex(obj => obj.element == id);
+    array[index].items.push(data);
+}
+// Remove specific offset from fixedOffsets and offsets
+function removeFromOffsetArray(array, item) {
+    let index = array.findIndex(obj => obj.element == item || obj == item);
+    if (index > -1) {
+        let elements = array[index];
+        if (typeof elements == "object" && !elements.nodeName)
+            elements = elements.element;
+        elements = selectNode(elements, true);
+        if (NodeList.prototype.isPrototypeOf(elements)) {
+            for (let e of elements) {
+                e.style.removeProperty("transform");
+                e.style.removeProperty("-webkit-transform");
+                if (e.style.position == "fixed")
+                    e.style.removeProperty("position");
+            }
+            return;
+        }
+        elements.style.removeProperty("transform");
+        elements.style.removeProperty("-webkit-transform");
+        if (elements.style.position == "fixed")
+            elements.style.removeProperty("position");
+        array.splice(index, 1);
+    }
+    return array;
+}
+// Fetch from fixedOffsets and offsets
+function getFromOffsetArray(array, id) {
+    let item = array.filter(obj => obj.element == id);
+    return item[0].items;
+}
+// Return node incase string is provided
+function selectNode(elem, multiple) {
+    // return node if element is string
+    if (typeof elem == "string") {
+        if (multiple) {
+            return document.querySelectorAll(elem);
+        }
+        else {
+            return document.querySelector(elem);
+        }
+    }
+    else {
+        // return elem itself if already a node
+        return elem;
     }
 }
