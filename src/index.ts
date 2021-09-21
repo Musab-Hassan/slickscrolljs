@@ -15,9 +15,9 @@ interface momentumScrollStruct {
     root: string | HTMLElement | HTMLBodyElement | null,
     easing?: string,
     duration?: number,
-    fixedOffsets?: string[] | HTMLElement[] | HTMLBodyElement[] | null[],
+    fixedOffsets?: string[] | HTMLElement[] | NodeList[] | null[],
     offsets?: [{
-        element: string | HTMLElement | HTMLBodyElement | null,
+        element: string | HTMLElement | NodeList | null,
         speedY?: number,
         speedX?: number
     }],
@@ -514,8 +514,13 @@ export default class slickScroll {
 
 
     // The inView slickscroll function
-    public inView(element: string) {
-        let e = <any> document.querySelector(element);
+    public inView(element: string | HTMLElement | NodeList | null) {
+        if (!element) return;
+        if (NodeList.prototype.isPrototypeOf(element!)) {
+            console.warn("Multiple elements are not selectable at inView"); 
+            return;
+        }
+        let e = selectNode(element);
 
         let parent = scrollableParent(e);
         let parentViewTop = parent.getBoundingClientRect().top;
