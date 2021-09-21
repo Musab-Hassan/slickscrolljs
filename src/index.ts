@@ -169,6 +169,7 @@ export default class slickScroll {
 
             // Apply transform on children based on calculated value
             easeFrames(tl, pl, startStamp, (position: {x: number, y: number}) => {
+
                 let translate = `translate(${position.x}px, ${position.y}px)`;
                 fixedElem.fixed.style.webkitTransform = translate;
                 fixedElem.fixed.style.transform = translate;
@@ -182,10 +183,14 @@ export default class slickScroll {
                         let offset = `translate(${position.x * (e.speedX - 1)}px, ${position.y * (e.speedY - 1)}px)`;
                         let elements: any = selectNode(e.element, true);
                         
-                        for (e of elements as any) {
-                            e.style.webkitTransform = offset;
-                            e.style.transform = offset;
-                            
+                        if (NodeList.prototype.isPrototypeOf(elements)) {
+                            for (let e of elements as any) {
+                                e.style.webkitTransform = offset;
+                                e.style.transform = offset;
+                            }
+                        } else {
+                            elements.style.webkitTransform = offset;
+                            elements.style.transform = offset;
                         }
                     });
                 }
@@ -197,15 +202,14 @@ export default class slickScroll {
                         let elements = selectNode(activeFixedOffsets[i], true);
                         
                         if (NodeList.prototype.isPrototypeOf(elements)) {
-                            for (e of elements as any) {
+                            for (let e of elements as any) {
                                 e.style.webkitTransform = offset;
                                 e.style.transform = offset;
                             }
-                            return;
+                        } else {
+                            elements.style.webkitTransform = offset;
+                            elements.style.transform = offset;
                         }
-                        
-                        elements.style.webkitTransform = offset;
-                        elements.style.transform = offset;
                     }
                 }
             });
@@ -309,14 +313,12 @@ export default class slickScroll {
             }
         }
 
-        // TODO: Fix addOffest with a node
         // Add Offsets after intialization
         function addOffset(obj: { element?: string | HTMLElement | HTMLBodyElement | null, speedY: number, speedX: number}) {
             let activeOffset = getFromOffsetArray(THIS.offsets, selectNode(dataObj.root));
             if (activeOffset.length <= 0) activeOffset = getFromOffsetArray(THIS.offsets, dataObj.root);
 
-            obj.element = selectNode(obj.element);
-            if (typeof obj !== "object") { console.warn("Node not found for addOffset"); return; }
+            if (typeof obj !== "object") return;
             if (!("element" in obj)) { console.warn("Node not found for addOffset"); return; }
             // Check if offset is already set
             const find = activeOffset.find((i: any) => i.element == obj.element);
@@ -326,14 +328,14 @@ export default class slickScroll {
             pushToOffsetArray(THIS.offsets, dataObj.root, obj);
         }
 
-        // TODO: Fix addFixedOffset with a node
         // Add fixedOffsets after intialization
         function addFixedOffset(element: string | HTMLElement | HTMLBodyElement | null) {
             let activeFixedOffsets = getFromOffsetArray(THIS.fixed, selectNode(dataObj.root));
             if (activeFixedOffsets.length <= 0) activeFixedOffsets = getFromOffsetArray(THIS.offsets, dataObj.root);
 
-            if (!selectNode(element) || activeFixedOffsets.includes(element)) return;
-            pushToOffsetArray(THIS.fixed, dataObj.root, selectNode(element));
+            if (!selectNode(element, true) || activeFixedOffsets.includes(element)) return;
+            
+            pushToOffsetArray(THIS.fixed, selectNode(dataObj.root), element);
         }
 
         // Remove specific node from offset or fixedoffset
@@ -346,11 +348,11 @@ export default class slickScroll {
             let fixedIndex = THIS.fixed.findIndex((e: any) => e.element == selectNode(dataObj.root));
 
             if (activeItem.length > 0) {
-                THIS.offsets[offsetIndex].items = removeFromOffsetArray(activeItem, selectNode(element));
+                THIS.offsets[offsetIndex].items = removeFromOffsetArray(activeItem, selectNode(element, true));
                 THIS.offsets[offsetIndex].items = removeFromOffsetArray(activeItem, element);
             }
             if (activeFixedItem.length > 0) {
-                THIS.fixed[fixedIndex].items = removeFromOffsetArray(activeFixedItem, selectNode(element));
+                THIS.fixed[fixedIndex].items = removeFromOffsetArray(activeFixedItem, selectNode(element, true));
                 THIS.fixed[fixedIndex].items = removeFromOffsetArray(activeFixedItem, element);
             }
         }
@@ -566,8 +568,9 @@ function setOffsetArray(array: any[], id: any, data?: any[]) {
 
 // Add an offset or fixedOffset
 function pushToOffsetArray(array: any[], id: any, data?: any) {
-    let item = array.filter(obj => obj.element == id);
-    item[0].items.push(data);
+    let index = array.findIndex(obj => obj.element == id);
+    array[index].items.push(data);
+    console.log(array[index]);
 }
 
 // Remove specific offset from fixedOffsets and offsets
