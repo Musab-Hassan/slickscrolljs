@@ -570,7 +570,6 @@ function setOffsetArray(array: any[], id: any, data?: any[]) {
 function pushToOffsetArray(array: any[], id: any, data?: any) {
     let index = array.findIndex(obj => obj.element == id);
     array[index].items.push(data);
-    console.log(array[index]);
 }
 
 // Remove specific offset from fixedOffsets and offsets
