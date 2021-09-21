@@ -4,7 +4,7 @@
 
 Slickscroll is a JavaScript library that makes momentum & parallax scrolling quick and painless
 
-[![NPM version](http://img.shields.io/npm/v/slickscrolljs.svg?style=flat-square)](https://www.npmjs.org/package/slickscrolljs) [![NPM license](http://img.shields.io/npm/l/slickscrolljs.svg?style=flat-square)](https://www.npmjs.org/package/slickscrolljs)
+[![NPM version](http://img.shields.io/npm/v/slickscrolljs.svg?style=for-the-badge&logo=npm)](https://www.npmjs.org/package/slickscrolljs) [![NPM license](http://img.shields.io/npm/l/slickscrolljs.svg?style=for-the-badge)](https://www.npmjs.org/package/slickscrolljs)
 
 **View Demo: [slickscroll.musabhassan.com](https://slickscroll.musabhassan.com)**
 
@@ -79,6 +79,8 @@ Firefox | 48+
 Opera | 48+
 Safari | 13+
 
+### Contributors
+Musab-Hassan
+
 ### License
 MIT license.
-Copyright (2021) Musab Hassan
