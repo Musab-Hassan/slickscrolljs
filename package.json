@@ -1,8 +1,8 @@
 {
   "name": "slickscrolljs",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Lightweight JavaScript library for slick looking momentum scrolling, handling scroll events, and everything else scrolling",
-  "module": "dist/slickscroll.min.es.js",
+  "module": "dist/slickscroll.es.min.js",
   "main": "dist/export.module.js",
   "repository": {
     "type": "git",
