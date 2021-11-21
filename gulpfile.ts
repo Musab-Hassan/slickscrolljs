@@ -4,8 +4,8 @@ To build index.ts, use one of the following commands:
 
 * gulp build-dev - Builds source JS files
 * gulp build-prod - Builds source JS files and minified production files
-* gulp watch-dev - Watches for changes and then runs build-dev
-* gulp watch-dev - Watches for changes and then runs build-prod
+* gulp watch-dev - Watches for changes in index.ts and then runs build-dev
+* gulp watch-dev - Watches for changes in index.ts and then runs build-prod
 
 */
 
