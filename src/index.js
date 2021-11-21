@@ -54,8 +54,7 @@ var slickScroll = /** @class */ (function () {
     // mometumScrolling
     slickScroll.prototype.momentumScroll = function (dataObj) {
         var _this = this;
-        var THIS = this;
-        // class this for access from inner functions
+        var THIS = this; // class's 'this' for access from inner functions
         dataObj = Object.assign({}, this.defaults, dataObj); // assign defaults to dataObj object if any missing properties
         var pl, startStamp;
         var rootElem = selectNode(dataObj.root);
@@ -101,7 +100,14 @@ var slickScroll = /** @class */ (function () {
         }
         // if client is desktop and supported
         var fixedElem = DOMRestructure(rootElem);
+        var mutationObserver = new MutationObserver(onResize);
+        // Detect any changes to root element's appearance
         window.addEventListener("resize", onResize);
+        mutationObserver.observe(selectNode(dataObj.root), {
+            childList: true,
+            attributes: true,
+            subtree: true
+        });
         rootElem.addEventListener("scroll", onScroll);
         return {
             destroy: onDestroy,
@@ -128,8 +134,10 @@ var slickScroll = /** @class */ (function () {
                 var translate = "translate(" + position.x + "px, " + position.y + "px)";
                 fixedElem.fixed.style.webkitTransform = translate;
                 fixedElem.fixed.style.transform = translate;
-                // Offset elements scrolling
-                if (activeOffsets) {
+                // Offset elements scrolling if there are any present
+                if (Array.isArray(activeOffsets)) {
+                    if (activeOffsets.length < 1)
+                        return;
                     activeOffsets.forEach(function (e) {
                         e = Object.assign({}, THIS.defaults.offsets, e);
                         var offset = "translate(" + position.x * (e.speedX - 1) + "px, " + position.y * (e.speedY - 1) + "px)";
@@ -147,8 +155,10 @@ var slickScroll = /** @class */ (function () {
                         }
                     });
                 }
-                // Fixed elements
-                if (activeFixedOffsets) {
+                // Fixed elements being set as fixed if there are any present
+                if (Array.isArray(activeFixedOffsets)) {
+                    if (activeFixedOffsets.length < 1)
+                        return;
                     for (var i = 0; i < activeFixedOffsets.length; i++) {
                         var offset = "translate(" + position.x * -1 + "px, " + position.y * -1 + "px)";
                         var elements = selectNode(activeFixedOffsets[i], true);
@@ -210,8 +220,10 @@ var slickScroll = /** @class */ (function () {
             var activeOffsets = getFromOffsetArray(THIS.offsets, selectNode(dataObj.root));
             var activeFixedOffsets = getFromOffsetArray(THIS.fixed, selectNode(dataObj.root));
             var wrapper = selectNode(dataObj.root).querySelector("._SS_wrapper");
+            // Remove all Observers and eventlisteners
             rootElem.removeEventListener("scroll", onScroll);
             window.removeEventListener("resize", onResize);
+            mutationObserver.disconnect();
             // Revert element root's node to original state by removing all slickscroll classes
             for (var i = wrapper.children.length; i > 0; i--) {
                 if (wrapper.children[i - 1].removeProperty)
