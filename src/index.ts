@@ -78,12 +78,11 @@ export default class slickScroll {
     // mometumScrolling
     public momentumScroll(dataObj: momentumScrollStruct) {
         
-        let THIS = this;
-        // class this for access from inner functions
+        let THIS = this; // class's 'this' for access from inner functions
         dataObj = (<any>Object).assign({}, this.defaults, dataObj); // assign defaults to dataObj object if any missing properties
         
         let pl: {x: number, y: number}, startStamp: number;
-        let rootElem = selectNode(dataObj.root); 
+        let rootElem = selectNode(dataObj.root);
 
         // set any assigned offsets or fixedOffsets
         setOffsetArray(this.fixed, selectNode(dataObj.root), dataObj.fixedOffsets);
@@ -136,7 +135,16 @@ export default class slickScroll {
 
         // if client is desktop and supported
         let fixedElem = DOMRestructure(rootElem);
+        let mutationObserver = new MutationObserver(onResize);
+        // Detect any changes to root element's appearance
         window.addEventListener("resize", onResize);
+        mutationObserver.observe(selectNode(dataObj.root), {
+            childList: true,
+            attributes: true,
+            subtree: true
+        })
+        
+        
         rootElem.addEventListener("scroll", onScroll);
 
         return {
@@ -173,8 +181,10 @@ export default class slickScroll {
                 fixedElem.fixed.style.webkitTransform = translate;
                 fixedElem.fixed.style.transform = translate;
 
-                // Offset elements scrolling
-                if (activeOffsets) {
+                // Offset elements scrolling if there are any present
+                if (Array.isArray(activeOffsets)) {
+
+                    if (activeOffsets.length < 1) return;
 
                     activeOffsets.forEach((e: any) => {
                         e = Object.assign({}, THIS.defaults.offsets, e);
@@ -194,8 +204,11 @@ export default class slickScroll {
                     });
                 }
 
-                // Fixed elements
-                if (activeFixedOffsets) {
+                // Fixed elements being set as fixed if there are any present
+                if (Array.isArray(activeFixedOffsets)) {
+
+                    if (activeFixedOffsets.length < 1) return;
+
                     for (let i = 0; i < activeFixedOffsets.length; i++) {
                         let offset = `translate(${position.x * -1}px, ${position.y * -1}px)`;
                         let elements = selectNode(activeFixedOffsets[i], true);
@@ -272,8 +285,11 @@ export default class slickScroll {
             let activeFixedOffsets = getFromOffsetArray(THIS.fixed, selectNode(dataObj.root));
             let wrapper: any = selectNode(dataObj.root).querySelector("._SS_wrapper");
 
+            // Remove all Observers and eventlisteners
             rootElem.removeEventListener("scroll", onScroll);
             window.removeEventListener("resize", onResize);
+            mutationObserver.disconnect();
+
             // Revert element root's node to original state by removing all slickscroll classes
             for (let i = wrapper.children.length; i > 0; i--) {
                 if (wrapper.children[i-1].removeProperty) wrapper.children[i-1].removeProperty("transform");
