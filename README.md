@@ -38,7 +38,7 @@ HTML script tag
 <script src="slickscroll.min.js"></script>
 
 <script type="text/javascript"> 
-    var slick = new slickScroll;
+    var slick = new slickScroll.default;
 </script>
 ```
 
