@@ -629,7 +629,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (/* binding */ slickScroll)
 /* harmony export */ });
 /* harmony import */ var _momentumScroll_main__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./momentumScroll/main */ "./src/momentumScroll/main.ts");
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utils */ "./src/utils.ts");
 /**************************************
 *            SlickScrollJS
 *           © Musab Hassan
@@ -638,38 +637,10 @@ __webpack_require__.r(__webpack_exports__);
 *
 ***************************************/
 
-
 class slickScroll {
     constructor() {
         // mometumScrolling
         this.momentumScroll = _momentumScroll_main__WEBPACK_IMPORTED_MODULE_0__.momentumScroll;
-    }
-    // The inView slickscroll function
-    inView(element) {
-        if (!element)
-            return;
-        if (NodeList.prototype.isPrototypeOf(element)) {
-            console.warn("Multiple elements are not selectable at inView");
-            return;
-        }
-        let e = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.selectNode)(element);
-        let parent = scrollableParent(e);
-        let parentViewTop = parent.getBoundingClientRect().top;
-        let parentViewBottom = parentViewTop + parent.getBoundingClientRect().height;
-        var elemTop = e.getBoundingClientRect().top;
-        var elemBottom = elemTop + (e.getBoundingClientRect().height);
-        // Returns boolean on if element is in view or not
-        return (((elemBottom <= parentViewBottom) && (elemTop >= parentViewTop)) &&
-            ((elemBottom > 0) && (elemTop <= window.innerHeight)));
-        // Go through parent list to find first scrollable parent
-        function scrollableParent(e) {
-            if (e == null)
-                return document.body;
-            let overflow = window.getComputedStyle(e).getPropertyValue('overflow');
-            if (e.scrollHeight > e.clientHeight && overflow != "visible" && overflow != "hidden")
-                return e;
-            return scrollableParent(e.parentNode);
-        }
     }
 }
 
