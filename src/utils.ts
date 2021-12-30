@@ -108,8 +108,7 @@ export function isCompatible() {
             check = true; 
     }) (navigator.userAgent || navigator.vendor);
     
-    if (!check && CSS.supports) 
-        check = !CSS.supports("position", "sticky");
+    if (!check && CSS.supports) check = !CSS.supports("position", "sticky");
     return !check;
 }
 
