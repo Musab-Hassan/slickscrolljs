@@ -37,11 +37,18 @@ export function momentumScroll(dataObj: momentumScrollStruct) {
                     e = Object.assign({}, defaultSpeeds, e);
 
                     let offset = `translate(${event.target.scrollLeft * (1 - e.speedX)}px, ${event.target.scrollTop * (1 - e.speedY)}px)`;
-                    let elements: NodeListOf<any> = selectNode(e.element, true);
+                    let nodes = selectNode(e.element, true);
 
-                    for (e of elements as any) {
-                        e.style.webkitTransform = offset;
-                        e.style.transform = offset;
+                    if (Symbol.iterator in Object(nodes)) {
+                        // If multiple nodes are selected
+                        for (let e of nodes as any) {
+                            e.style.webkitTransform = offset;
+                            e.style.transform = offset;
+                        }
+                    } else {
+                        // If single node is selected
+                        nodes.style.webkitTransform = offset;
+                        nodes.style.transform = offset;
                     }
                 });
             }
