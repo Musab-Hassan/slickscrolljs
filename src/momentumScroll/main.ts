@@ -49,10 +49,17 @@ export function momentumScroll(dataObj: momentumScrollStruct) {
 
         // Fixed elements
         if (activeFixedOffsets) {
-            activeFixedOffsets.forEach((e: any) => {
-                let elements: NodeListOf<any> = selectNode(e, true);
-                for (e of elements as any) {
-                    e.style.position = "fixed";
+            activeFixedOffsets.forEach((element: any) => {
+                let nodes = selectNode(element, true);
+
+                if (Symbol.iterator in Object(nodes)) {
+                    // If multiple nodes are selected
+                    for (let e of nodes as any) {
+                        e.style.position = "fixed";
+                    }
+                } else {
+                    // If single node is selected
+                    nodes.style.position = "fixed";
                 }
             });
         }
