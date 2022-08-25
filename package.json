@@ -1,7 +1,7 @@
 {
   "name": "slickscrolljs",
-  "version": "1.3.2",
-  "description": "Lightweight JavaScript library for slick looking momentum scrolling, handling scroll events, and everything else scrolling",
+  "version": "2.0.0",
+  "description": "Lightweight JavaScript library for smooth momentum scrolling and adding scroll based parallax effects",
   "module": "dist/slickscroll.es.min.js",
   "main": "dist/slickscroll.node.min.js",
   "repository": {
@@ -33,6 +33,5 @@
     "watch": "gulp watch",
     "dev": "gulp dev",
     "watch-dev": "gulp watch-dev"
-  },
-  "dependencies": {}
+  }
 }
