@@ -16,9 +16,14 @@ export default class slickScroll {
 
     #params: momentumScrollStruct;
 
-    #pl: { x: number, y: number };
-    #lastLocation: { x: number, y: number };
-    #startStamp: number;
+    #targetPosition: { x: number, y: number } = {
+        x: 0,
+        y: 0
+    };
+    #currentPosition: { x: number, y: number } = {
+        x: 0,
+        y: 0
+    };
 
     #restructedElements: any;
     #rootElement: any;
@@ -54,7 +59,7 @@ export default class slickScroll {
 
         this.#restructedElements = DOMRestructure(this.#rootElement);
         let matrix = new WebKitCSSMatrix(window.getComputedStyle(this.#restructedElements.fixed).transform);
-        this.#lastLocation = { x: matrix.m41, y: matrix.m42 }
+        this.#targetPosition = { x: matrix.m41, y: matrix.m42 }
         
         // Detect any changes to root element's appearance by listening to window resize and DOM tree changes
         this.#mutationObserver = new MutationObserver(this.#onWindowResize);
@@ -67,6 +72,8 @@ export default class slickScroll {
 
         // Bind scroll handler
         this.#rootElement.addEventListener("scroll", this.#scrollHandler);
+        // Begin animation loop
+        this.#animate();
     }
 
 
@@ -74,64 +81,11 @@ export default class slickScroll {
     #scrollHandler = (e: any) => {
         
         // Get scroll position of rootElement
-        this.#pl = { x: this.#rootElement.scrollLeft, y: this.#rootElement.scrollTop };
+        this.#targetPosition = { x: this.#rootElement.scrollLeft, y: this.#rootElement.scrollTop };
 
-        if (typeof this.#pl.x === "undefined" || typeof this.#pl.y === "undefined") {
-            this.#pl = { x: this.#rootElement.scrollX, y: this.#rootElement.scrollY, };
+        if (typeof this.#targetPosition.x === "undefined" || typeof this.#targetPosition.y === "undefined") {
+            this.#targetPosition = { x: this.#rootElement.scrollX, y: this.#rootElement.scrollY, };
         }
-
-        // Store time for timing animations
-        this.#startStamp = Date.now();
-
-        // Scroll Animation Frame Handler for easing
-        this.#animate(this.#lastLocation, this.#pl, this.#startStamp, (position: { x: number, y: number }) => {
-
-            let translateString = `translate3d(${position.x}px, ${position.y}px, 0px)`;
-            this.#restructedElements.fixed.style.webkitTransform = translateString;
-            this.#restructedElements.fixed.style.transform = translateString;
-
-            this.#lastLocation = position;
-
-            // Parallax offset elements scrolling
-            if (Array.isArray(this.#offsets)) {
-
-                for (let i = 0; i < this.#offsets.length; i++) {
-
-                    let e = Object.assign({}, defaultSpeeds, this.#offsets[i]);
-                    let offset = `translate3d(${position.x * (e.speedX - 1)}px, ${position.y * (e.speedY - 1)}px, 0)`;
-                    let elements: any = selectNode(e.element, true);
-
-                    if (NodeList.prototype.isPrototypeOf(elements)) {
-                        for (let e of elements as any) {
-                            e.style.webkitTransform = offset;
-                            e.style.transform = offset;
-                        }
-                    } else {
-                        elements.style.webkitTransform = offset;
-                        elements.style.transform = offset;
-                    }
-                }
-            }
-
-            // Set fixedOffsets position as fixed
-            if (Array.isArray(this.#fixedOffsets)) {
-
-                for (let i = 0; i < this.#fixedOffsets.length; i++) {
-                    let offset = `translate3d(${-position.x}px, ${-position.y}px, 0px)`;
-                    let node = selectNode(this.#fixedOffsets[i], true);
-
-                    if (NodeList.prototype.isPrototypeOf(node)) {
-                        for (let e of node as any) {
-                            e.style.webkitTransform = offset;
-                            e.style.transform = offset;
-                        }
-                    } else {
-                        node.style.webkitTransform = offset;
-                        node.style.transform = offset;
-                    }
-                }
-            }
-        });
 
         // Run params.onScroll function asynchrounously
         if (this.#params.onScroll) {
@@ -144,46 +98,71 @@ export default class slickScroll {
 
 
     // Tween between scroll position (momentum scrolling)
-    #animate(
-        tl: { x: number, y: number },
-        pl: { x: number, y: number },
-        startStamp: number, 
-        onIterate: (position: { x: number, y: number }) => void
-    ) {
-        // Parse bezier easing string into number values
+    #animate = () => {
+
+        if (this.#isDestroyed) return;
+
         let easing = parseBezierString(this.#params.easing);
+        let t = (1 / ((this.#params.duration / 10) + 1));
 
-        let diffX = ((tl.x * -1) - pl.x);
-        let diffY = ((tl.y * -1) - pl.y);
-        let x: number, y: number;
+        this.#currentPosition.x += bezierEasing.apply(null, easing)(t) * (this.#targetPosition.x - this.#currentPosition.x);
+        this.#currentPosition.y += bezierEasing.apply(null, easing)(t) * (this.#targetPosition.y - this.#currentPosition.y);
 
-        let duration = this.#params.duration;
+        this.#currentPosition.x = (Math.ceil(this.#currentPosition.x * 100) / 100);
+        this.#currentPosition.y = (Math.ceil(this.#currentPosition.y * 100) / 100);
 
-        // Animation frame loop
-        const loop = () => {
 
-            if (this.#isDestroyed) return;
+        // Apply transformations to root and offsets
+        let position = {
+            x: this.#currentPosition.x * -1,
+            y: this.#currentPosition.y * -1
+        }
 
-            let t = (Date.now() - startStamp) / duration!;
+        let translateString = `translate3d(${position.x}px, ${position.y}px, 0px)`;
+        this.#restructedElements.fixed.style.webkitTransform = translateString;
+        this.#restructedElements.fixed.style.transform = translateString;
 
-            if (t > 1) t = 1.01;
-            if (t < 1) {
-                x = (diffX * bezierEasing.apply(null, easing)(t)) + tl.x;
-                y = (diffY * bezierEasing.apply(null, easing)(t)) + tl.y;
+        // Parallax offset elements scrolling
+        if (Array.isArray(this.#offsets)) {
 
-                x = Math.ceil(x * 100) / 100;
-                y = Math.ceil(y * 100) / 100;
-                
-                new Promise(r => {
-                    onIterate({ x: x, y: y });
-                    r(true);
-                });
+            for (let i = 0; i < this.#offsets.length; i++) {
 
-                window.requestAnimationFrame(() => loop());
+                let e = Object.assign({}, defaultSpeeds, this.#offsets[i]);
+                let offset = `translate3d(${position.x * (e.speedX - 1)}px, ${position.y * (e.speedY - 1)}px, 0)`;
+                let elements: any = selectNode(e.element, true);
+
+                if (NodeList.prototype.isPrototypeOf(elements)) {
+                    for (let e of elements as any) {
+                        e.style.webkitTransform = offset;
+                        e.style.transform = offset;
+                    }
+                } else {
+                    elements.style.webkitTransform = offset;
+                    elements.style.transform = offset;
+                }
             }
-        };
+        }
 
-        loop();
+        // Set fixedOffsets position as fixed
+        if (Array.isArray(this.#fixedOffsets)) {
+
+            for (let i = 0; i < this.#fixedOffsets.length; i++) {
+                let offset = `translate3d(${-position.x}px, ${-position.y}px, 0px)`;
+                let node = selectNode(this.#fixedOffsets[i], true);
+
+                if (NodeList.prototype.isPrototypeOf(node)) {
+                    for (let e of node as any) {
+                        e.style.webkitTransform = offset;
+                        e.style.transform = offset;
+                    }
+                } else {
+                    node.style.webkitTransform = offset;
+                    node.style.transform = offset;
+                }
+            }
+        }
+
+        requestAnimationFrame(() => this.#animate());
     }
 
     // Mobile version without momentum scrolling, just parallax offset support
