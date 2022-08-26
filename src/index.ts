@@ -42,8 +42,8 @@ export default class slickScroll {
         this.#rootElement = selectNode(params.root);
 
         // Set any offsets or fixedOffsets assigned on initialization
-        this.#fixedOffsets = params.fixedOffsets;
-        this.#offsets = params.offsets;
+        if (params.fixedOffsets !== undefined) this.#fixedOffsets = params.fixedOffsets;
+        if (params.offsets !== undefined) this.#offsets = params.offsets;
 
         // Switch to mobile version of client is unsupported
         if (isCompatible()) {
@@ -224,7 +224,7 @@ export default class slickScroll {
     // ? Public Methods
 
     // Remove all slickScroll handers and return rootelement's DOM tree to its original state
-    destroy() {
+    public destroy() {
         
         let wrapper: any = this.#rootElement.querySelector("._SS_wrapper");
 
@@ -273,7 +273,7 @@ export default class slickScroll {
     }
 
     // Disable and remove a fixed or parallax Offset
-    removeOffset(offset: string | HTMLElement | HTMLBodyElement | null) {
+    public removeOffset(offset: string | HTMLElement | HTMLBodyElement | null) {
         this.#offsets = this.#offsets.filter(item => item.element !== offset);
         this.#offsets = this.#offsets.filter(item => item.element !== selectNode(offset, true));
         this.#fixedOffsets = this.#fixedOffsets.filter(item => item !== offset);
@@ -295,7 +295,7 @@ export default class slickScroll {
     }
 
 
-    addOffset(offset: {
+    public addOffset(offset: {
         element: string | HTMLElement | HTMLBodyElement | null,
         speedY?: number,
         speedX?: number
@@ -315,7 +315,7 @@ export default class slickScroll {
     }
 
 
-    addFixedOffset(element: string | HTMLElement | HTMLBodyElement | null) {
+    public addFixedOffset(element: string | HTMLElement | HTMLBodyElement | null) {
 
         // Check if offset already exists
         if (!selectNode(element, true) || this.#fixedOffsets.includes(element)) {
