@@ -42,7 +42,6 @@ export default class slickScroll {
         this.#rootElement = selectNode(params.root);
 
         // Set any offsets or fixedOffsets assigned on initialization
-        console.log(params.fixedOffsets);
         if (params.fixedOffsets !== undefined) this.#fixedOffsets = params.fixedOffsets;
         if (params.offsets !== undefined) this.#offsets = params.offsets;
 
