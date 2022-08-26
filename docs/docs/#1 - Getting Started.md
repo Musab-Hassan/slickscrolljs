@@ -18,7 +18,7 @@ let slick = new slickScroll({
     root: "body"
 });
 ```
-The root option specifies the element to in which the scrolling will be animated.
+The root option specifies the element in which the scrolling will be animated.
 
 *Note: the function will override the overflow property. Overflow must be changed again after initialization by modifying inline styles of the root. The following overflowX modification can only be done after initialization of slickscroll*
 ```javascript
