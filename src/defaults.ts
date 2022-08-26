@@ -1,9 +1,9 @@
 
-/* Default values and properties for momentumScroll */
+/* Default values and properties */
 
 
 // Default properties for momentumScrollStruct
-export var defaults: { root: any, duration: number, easing: string, offsets: any[], fixedOffsets: any[] } = {
+export const defaults: { root: any, duration: number, easing: string, offsets: any[], fixedOffsets: any[] } = {
     root: "body",
     duration: 1000,
     easing: "cubic-bezier(0.15, 1, 0.4, 1)",
@@ -12,13 +12,13 @@ export var defaults: { root: any, duration: number, easing: string, offsets: any
 }
 
 // Default offset speeds
-export var defaultSpeeds: { speedY: number, speedX: number } = {
+export const defaultSpeeds: { speedY: number, speedX: number } = {
     speedY: 1,
     speedX: 1
 }
 
 // Default pennerEasings
-export var pennerEasings: { name: string, value: number[] } [] = [
+export const pennerEasings: { name: string, value: number[] } [] = [
     // Sine
     { name: "easeInSine", value: [0.12, 0, 0.39, 0] },
     { name: "easeOutSine", value: [0.61, 1, 0.88, 1] },

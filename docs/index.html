@@ -13,12 +13,10 @@
     <script src="./slickscroll.min.js" type="text/javascript"></script>
     <!-- Slickscroll -->
     <script type="text/javascript">
-        let slick = new slickScroll.default;
-
         document.addEventListener('DOMContentLoaded', () => {
-            slick.momentumScroll({
-                root: "body",
-                duration: 700,
+            new slickScroll.default({
+                root: document.body,
+                duration: 400,
                 easing: "easeOutQuart",
                 offsets: [
                     {element: ".slow-parallax", speedY: 0.8}, 

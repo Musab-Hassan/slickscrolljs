@@ -26,19 +26,27 @@ npm install --save slickscrolljs
 
 ### Setup
 
+This setup will just apply momentum scrolling to the body
+
 ES6 import
 ```javascript
-import slickScroll from 'slickscroll.es.min.js';
+import slickScroll from './slickscroll.es.min.js';
 
-const slick = new slickScroll;
+const slick = new slickScroll({
+    root: "body"
+});
 ```
 
 HTML script tag
 ```html
-<script src="slickscroll.min.js"></script>
+<script src="./slickscroll.min.js" type="text/javascript"></script>
 
-<script type="text/javascript"> 
-    var slick = new slickScroll.default;
+<script type="text/javascript">
+
+    let slick = new slickScroll.default({
+        root: "body"
+    });
+
 </script>
 ```
 
@@ -46,7 +54,9 @@ Node require
 ```javascript
 const slickScroll = require('slickscrolljs');
 
-const slick = new slickScroll.default;
+const slick = new slickScroll.default({
+    root: "body"
+});
 ```
 
 ## Hello World
@@ -56,14 +66,18 @@ slick.momentumScroll({
     root: "body"
 })
 ```
-The overflow property will be overridden with `auto` upon initialization. If you wish to change overflow to anything else, you must modify it after the initialization. Here is an example to hide overflow-x.
+The overflow property of the `root` element will be overridden with `auto` upon initialization of slickscroll. If you wish to change overflow to anything else, you must modify it after the initialization.
+
+Momentum scrolling applies to both x and y axis of an element. If you wish for an axis to not scroll, change it's overflow value to `hidden` after slickscroll initialization.
+
+Example to hide overflow-x after initializing up slickscroll;
 
 ```javascript
-slick.momentumScroll({
+const slick = new slickScroll.default({
     root: "body"
 });
 
-document.querySelector("body").style.overflowX = "hidden";
+document.body.style.overflowX = "hidden";
 ```
 
 All the valid options aswell as documentation and Getting Started can be found in the `docs` directory.
@@ -74,10 +88,10 @@ Browser | Version
 | - | - |
 Chrome | 61+
 Edge | 80+
-IE | None
+IE | 11
 Firefox | 48+
 Opera | 48+
-Safari | 13+
+Safari | 12+
 
 ### Contributors
 Musab-Hassan

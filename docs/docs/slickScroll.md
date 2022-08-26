@@ -1,9 +1,9 @@
-# momentumScroll
+# slickScroll
 Allows momentumScrolling and scroll based parallax effects.
 
-### Function Overview
+### Class Overview
 ```javascript
-slickScroll.momentumScroll(options)
+new slickScroll(options)
 ```
 
 ### Parameters
@@ -13,15 +13,15 @@ slickScroll.momentumScroll(options)
     Name | Type | Required | Default | Description
     | - | - | - | - | - |
     root | *String \| HTMLElement* | Yes | `body` | Element to apply momentum scroll on
-    easing | *String* | Yes | `cubicBezier()` | Easing function
-    duration | *Number* | Yes | `1000` | Duration of easing in milliseconds
+    easing | *String* | No | `cubicBezier(0.15, 1, 0.4, 1)` | Easing function
+    duration | *Number* | No | `1000` | Duration of easing in milliseconds
     fixedOffsets | *String[] \| HTMLElement[]* | No | - | Array of position:fixed elements
     offsets | *Object[]* | No | - | Array of elements with custom speeds (See ***#2-Offsets.md***)
     onScroll | *Function* | No | - | Scroll listener for root element
 
 ### Returns
 
-- addOffset `Function` - *Add offset (element with custom speed)*
+- addOffset `Method` - *Add offset (element with custom speed)*
     
     **Parameters**
     - offset `Object` - *Refer to **#2-Offsets.md** *
@@ -32,18 +32,18 @@ slickScroll.momentumScroll(options)
 
 <br>
 
-- addFixedOffset `Function` - *Add fixed offset (element with fixed position)*
+- addFixedOffset `Method` - *Add fixed offset (element with fixed position)*
 
     **Parameters**
     - element `String` | `HTMLElement` - *Element to be added as a fixed offset*
 
 <br>
 
-- removeOffset `Function` - *Removes an offset or fixedOffset*
+- removeOffset `Method` - *Removes an offset or fixedOffset*
 
     **Parameters**
     - element `String` | `HTMLElement`  - *Offset name or node to be removed*
 
 <br>
 
-- destroy `Function` - *Destroys instance of momentumScroll*
+- destroy `Method` - *Disables scroll effects for instance and reverts scrolling to original behaviour*

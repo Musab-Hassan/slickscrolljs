@@ -1,68 +1,7 @@
 /*             utils.ts                 */
-/* Globally accessible helper functions */
+/*         Helper functions             */
 
-import { pennerEasings } from "./momentumScroll/defaults";
-
-
-// Initalize an array of fixedOffsets or offsets
-export function setOffsetArray(array: any[], id: any, data?: any[]) {
-    let itemArr: { element: any, items: any[] }[] = array.filter(obj => obj.element == id);
-    if (itemArr.length > 0) {
-        if (data) itemArr[0].items = data;
-        itemArr[0].element = id;
-    } else {
-        let obj;
-        if (data) {
-            obj = { element: id, items: data };
-        } else {
-            obj = { element: id };
-        }
-        array.push(obj);
-    }
-}
-
-
-// Push to an offsets or fixedOffsets Array
-export function pushToOffsetArray(array: any[], id: any, data?: any) {
-    let index = array.findIndex(obj => obj.element == id);
-    array[index].items.push(data);
-}
-
-
-// Remove specific offset from fixedOffsets or offsets
-export function removeFromOffsetArray(array: any[], item: any) {
-    let index = array.findIndex(obj => obj.element == item || obj == item);
-    if (index > -1) {
-
-        let elements = array[index];
-        if (typeof elements == "object" && !elements.nodeName) elements = elements.element;
-
-        elements = selectNode(elements, true);
-
-        if (NodeList.prototype.isPrototypeOf(elements)) {
-            for (let e of elements as any) {
-                e.style.removeProperty("transform");
-                e.style.removeProperty("-webkit-transform");
-                if (e.style.position == "fixed") e.style.removeProperty("position");
-            }
-            return;
-        }
-
-        elements.style.removeProperty("transform");
-        elements.style.removeProperty("-webkit-transform");
-        if (elements.style.position == "fixed") elements.style.removeProperty("position");
-
-        array.splice(index, 1);
-    }
-    return array;
-}
-
-
-// Fetch an offset from fixedOffsets or offsets
-export function getFromOffsetArray(array: any[], id: any) {
-    let item = array.filter(obj => obj.element == id);
-    return item[0].items;
-}
+import { pennerEasings } from "./defaults";
 
 
 // Select the node if a query string is provided
@@ -110,6 +49,53 @@ export function isCompatible() {
     
     if (!check && CSS.supports) check = !CSS.supports("position", "sticky");
     return !check;
+}
+
+
+
+// Adds fixed transformable child element to the root element
+export function DOMRestructure(root: any) {
+    // Make sure root doesnt already have a position
+    if (getComputedStyle(root).position != "absolute" || getComputedStyle(root).position != "fixed") {
+        root.style.position = "relative";
+    }
+
+    let child = document.createElement('div');
+    let dummy = document.createElement('div');
+
+    child.classList.add("_SS_wrapper");
+    dummy.classList.add("_SS_dummy");
+
+    for (let i = root.children.length; i > 0; i--) {
+        child.insertBefore(root.children[(i - 1)], child.children[0]);
+    }
+
+    root.innerHTML = "";
+    root.style.overflow = "auto";
+    root.appendChild(child);
+    root.appendChild(dummy);
+
+    // Dummy Scroll element to allow overflow to appear
+    dummy.style.height = child.scrollHeight + "px";
+    dummy.style.width = child.scrollWidth + "px";
+    dummy.style.top = "0px";
+    dummy.style.left = "0px";
+    dummy.style.position = "absolute";
+    dummy.style.zIndex = "-9999";
+
+    // Content inside the root element
+    child.style.zIndex = "1";
+    child.style.height = "100%";
+    child.style.width = "100%";
+    child.style.overflow = "visible";
+    child.style.top = "0px";
+    child.style.left = "0px";
+    child.style.position = "sticky";
+
+    return {
+        fixed: root.querySelector("div._SS_wrapper"),
+        dummy: root.querySelector("div._SS_dummy")
+    };
 }
 
 
