@@ -1,6 +1,6 @@
 {
   "name": "slickscrolljs",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Lightweight JavaScript library for smooth momentum scrolling and adding scroll based parallax effects",
   "module": "dist/slickscroll.es.min.js",
   "main": "dist/slickscroll.node.min.js",
