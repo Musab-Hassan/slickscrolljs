@@ -3,20 +3,21 @@ The momentumScroll function's timing and easing can also be changed. SlickScroll
 
 ### Easing
 
-Slickscroll supports cubic beziers and the Penner Easing functions for easing.
+Slickscroll supports Cubic Beziers and the Penner Easing functions for easing.
 
-The default easing function is `cubicBezier(0.15, 1, 0.4, 1)`. It can be changed by modifying the easing option.
+The default easing function is `cubicBezier(0.15, 1, 0.4, 1)` which can be changed by modifying the `easing` option.
 
+Penner Functions can be used.
 ```javascript
-slick.momentumScroll({
+new slickscroll({
     root: "body",
     easing: "easeInOutSine"
 })
 ```
 
-Cubic beziers can also be used.
+Cubic Beziers can also be used.
 ```javascript
-slick.momentumScroll({
+new slickScroll({
     root: "body",
     easing: "cubicBezier(.56, .09, .89, .29)",
 })
@@ -41,11 +42,11 @@ easeInCirc | easeOutCirc | easeInOutCirc
 
 Along with easing, the duration can also be changed to modify the scroll speed. 
 
-The default duration is 1000 ms. To set a different duration, the `duration` option can be changed with a value in milliseconds.
+The default duration is 1000ms (1s). To set a different duration, the `duration` option can be changed with a value in milliseconds.
 
 In this example, the duration is set to 2.5 seconds.
 ```javascript
-slick.momentumScroll({
+new slickScroll({
     root: "body",
     duration: 2500
 });
@@ -57,7 +58,7 @@ slick.momentumScroll({
 Easings can be modified through the `easing` option. 
 
 ```javascript
-slickScroll.momentumScroll({
+new slickScroll({
     easing: String // Penner function name or bezier curve
 });
 ```
@@ -66,11 +67,8 @@ Default value: `cubicBezier(0.15, 1, 0.4, 1)`
 The scroll animation duration can be modified with the `duration` option. 
 
 ```javascript
-slickScroll.momentumScroll({
+new slickScroll({
     duration: Number // Time in miliseconds
 )};
 ```
 Default value: `1000`
-
-Next Suggested document.
-#### **#4 - inView**

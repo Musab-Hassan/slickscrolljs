@@ -1,26 +1,26 @@
 # Getting Started
 
-Momentum scrolling is achieved through the `slickScroll.momentumScroll` function.
+Momentum scrolling is achieved by creating a new instance of `slickScroll`.
 
 ```javascript
-slickScroll.momentumScroll(options);
+// ES6
+new slickScroll(options);
+// ES5 & Node
+new slickScroll.default(options);
 ```
 
-Full details about the momentumScroll function can be found in *momentumScroll*.
+For this documentation, the ES6 version will be used for examples however the same applies to ES5 and Node by just replacing `slickScroll` with `slickScroll.default`; 
 
-Momentum scrolling is initialized by using the  momentumScroll function. Here is an example to apply the default momentum scrolling to the body. 
+Here is an example to apply slickscroll to the body. 
 
 ```javascript
-// See README on how to import slickscroll
-let slick = new slickScroll;
-
-let instance = slick.momentumScroll({
+let slick = new slickScroll({
     root: "body"
 });
 ```
-The root option specifies the element to contain the momentum scrolling within.
+The root option specifies the element to in which the scrolling will be animated.
 
-*Note: the function will override the overflow property. Overflow must be changed again after initialization by modifying inline styles of the root. The following overflowX modification can only be done after initialization of momentumScroll*
+*Note: the function will override the overflow property. Overflow must be changed again after initialization by modifying inline styles of the root. The following overflowX modification can only be done after initialization of slickscroll*
 ```javascript
 document.querySelector("body").style.overflowX = "hidden";
 ```
@@ -28,17 +28,16 @@ document.querySelector("body").style.overflowX = "hidden";
 <br>
 
 ### Destroy
-Instances of momentumScroll can be destroyed, removing the momentum scrolling effect and reverting the root to its original state.
+Instances of slickscroll can be destroyed, removing the momentum scrolling effect and reverting the scroll behaviour to the browser default.
 
 ```javascript
-let instance = slick.momentumScroll({
+let slick = new slickScroll({
     root: "body",
     ...
 });
 
-instance.destroy();
+slick.destroy();
 ```
 
-Next Suggested document.
+Next Document.
 #### **#2 - Offsets**
-
