@@ -62,7 +62,7 @@ const slick = new slickScroll.default({
 ## Hello World
 The hello world will apply the momentum scrolling to the element you specify.
 ```javascript
-slick.momentumScroll({
+new slickScroll({
     root: "body"
 })
 ```
